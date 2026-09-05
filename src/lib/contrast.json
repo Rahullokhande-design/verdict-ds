@@ -4,8 +4,8 @@
     "primitives": 124,
     "semanticRoles": 73,
     "componentTokens": 94,
-    "pairsMeasured": 72,
-    "pairsGated": 70,
+    "pairsMeasured": 76,
+    "pairsGated": 74,
     "pairsAdvisory": 2
   },
   "floors": {
@@ -297,6 +297,54 @@
       "bgHex": "#E8ECF0",
       "context": "Row metadata in the queue rail",
       "ratio": 5.29,
+      "min": 4.5,
+      "passes": true,
+      "advisory": false
+    },
+    {
+      "theme": "dark",
+      "fg": "decision-approve-fg",
+      "bg": "surface-sunken",
+      "fgHex": "#8FDBC2",
+      "bgHex": "#0B0F14",
+      "context": "Approve wording on a sunken surface",
+      "ratio": 11.97,
+      "min": 4.5,
+      "passes": true,
+      "advisory": false
+    },
+    {
+      "theme": "light",
+      "fg": "decision-approve-fg",
+      "bg": "surface-sunken",
+      "fgHex": "#0C523D",
+      "bgHex": "#E8ECF0",
+      "context": "Approve wording on a sunken surface",
+      "ratio": 7.72,
+      "min": 4.5,
+      "passes": true,
+      "advisory": false
+    },
+    {
+      "theme": "dark",
+      "fg": "decision-decline-fg",
+      "bg": "surface-sunken",
+      "fgHex": "#F4AEBC",
+      "bgHex": "#0B0F14",
+      "context": "Decline wording on a sunken surface",
+      "ratio": 10.64,
+      "min": 4.5,
+      "passes": true,
+      "advisory": false
+    },
+    {
+      "theme": "light",
+      "fg": "decision-decline-fg",
+      "bg": "surface-sunken",
+      "fgHex": "#801C32",
+      "bgHex": "#E8ECF0",
+      "context": "Decline wording on a sunken surface",
+      "ratio": 8.3,
       "min": 4.5,
       "passes": true,
       "advisory": false

@@ -64,12 +64,19 @@ export default tseslint.config(
   },
 
   /**
-   * The rule fixtures are deliberately full of violations. That is what they
-   * are: each one is a rule being shown catching the thing it claims to catch.
-   * Linting them would be the rules reporting on their own test cases.
+   * Two files exist to contain violations, so the rules are off inside them:
+   * the fixtures, where each rule is shown catching what it claims to, and the
+   * enforcement documentation, which shows a reader the exact line each rule
+   * rejects. Linting either would be the rules reporting on their own evidence.
+   *
+   * Both were caught on the first run, which is the correct behaviour and a
+   * fair reminder that an exemption should be narrow, named and justified.
    */
   {
-    files: ["eslint-rules/__tests__/**"],
+    files: [
+      "eslint-rules/__tests__/**",
+      "src/stories/Enforcement.stories.tsx",
+    ],
     rules: {
       "verdict/no-raw-hex": "off",
       "verdict/no-primitive-token-in-component": "off",

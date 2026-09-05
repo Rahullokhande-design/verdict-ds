@@ -693,6 +693,12 @@ export const contrastPairs: {
   { fg: "text-primary", bg: "surface-selected", context: "Selected row text", min: 4.5 },
   { fg: "row-decided-fg", bg: "surface-sunken", context: "An already-decided row in the queue rail", min: 4.5 },
   { fg: "row-meta-fg", bg: "surface-sunken", context: "Row metadata in the queue rail", min: 4.5 },
+  // The decision foregrounds, used as text on a sunken surface rather than on
+  // their own tinted background. Declared after axe found a `-solid` fill being
+  // used as a label, which is the mistake the fg/solid split exists to prevent
+  // and which no declared pair covered until now.
+  { fg: "decision-approve-fg", bg: "surface-sunken", context: "Approve wording on a sunken surface", min: 4.5 },
+  { fg: "decision-decline-fg", bg: "surface-sunken", context: "Decline wording on a sunken surface", min: 4.5 },
 
   // Interactive boundaries and focus, WCAG 1.4.11
   { fg: "border-control", bg: "surface-raised", context: "Input and outline-button boundary in a panel", min: 3 },
