@@ -1,6 +1,6 @@
 # Verdict Design System
 
-[![CI](https://github.com/REPO_OWNER/verdict-ds/actions/workflows/ci.yml/badge.svg)](https://github.com/REPO_OWNER/verdict-ds/actions/workflows/ci.yml)
+[![CI](https://github.com/Rahullokhande-design/verdict-ds/actions/workflows/ci.yml/badge.svg)](https://github.com/Rahullokhande-design/verdict-ds/actions/workflows/ci.yml)
 
 A three-tier design token architecture and 20-component library for **Verdict**,
 a concept card-fraud review console. A model scores flagged transactions and a
