@@ -36,6 +36,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(ROOT, "src/lib/tokens.ts");
 const OUT_CSS = join(ROOT, "src/styles/tokens.css");
 const OUT_JSON = join(ROOT, "src/lib/contrast.json");
+const OUT_TOKENS = join(ROOT, "src/lib/tokens.json");
 
 /* ── Read the token source ────────────────────────────────────────────────
  * tokens.ts is TypeScript and this script runs under bare node, so rather than
@@ -335,9 +336,179 @@ const json = JSON.stringify(
   2
 ) + "\n";
 
+/* ── W3C Design Tokens export ──────────────────────────────────────────────
+ *
+ * tokens.css is for this application. tokens.json is for everyone else.
+ *
+ * A team adopting a token system should not have to parse someone's stylesheet
+ * to get at the values, and should not have to accept the shape one repository
+ * happened to choose. The Design Tokens Community Group format is the neutral
+ * interchange: Style Dictionary, Tokens Studio, Figma variable importers and
+ * most in-house pipelines read it directly, so this same source becomes a
+ * Tailwind config, iOS constants or Figma variables without anyone retyping a
+ * hex code.
+ *
+ * Two decisions in here matter more than the format.
+ *
+ * ALIASES ARE PRESERVED. A semantic role exports as
+ * `{primitive.color.graphite.850}`, not as `#1A2028`. Flattening is what naive
+ * exports do and it destroys the thing worth exporting: it turns a three-tier
+ * system into a list of colours, and every relationship the tiers encode, which
+ * role is which, what re-themes together, what a component is actually allowed
+ * to read, is gone at the moment of export. The importing team then has values
+ * and no system.
+ *
+ * THEMES ARE COMPLETE, NOT LAYERED. Each theme carries its own semantic and
+ * component sets, so `theme.dark` is internally consistent and can be imported
+ * on its own. Component tokens are theme-agnostic in the source, but a
+ * cross-theme alias in an export is a trap: it resolves for whoever wrote it
+ * and dangles for whoever imports one theme. Duplicating them is cheap and
+ * every consumer handles it.
+ */
+
+/**
+ * Infer a DTCG $type.
+ *
+ * An aliased token has no literal value to look at, so the type is taken from
+ * what the alias chain finally resolves to. `$type` is the field a consumer
+ * pipeline switches on, so leaving it off an aliased colour would push the
+ * importing team straight back to guessing, which is the thing this file exists
+ * to stop.
+ */
+function dtcgType(path, resolvedValue) {
+  if (/(^|[.-])(space|radius)([.-]|$)/.test(path)) return "dimension";
+  if (/(^|[.-])(fontSize|letterSpacing)([.-]|$)/.test(path)) return "dimension";
+  if (/(^|[.-])fontFamily([.-]|$)/.test(path)) return "fontFamily";
+  if (/(^|[.-])fontWeight([.-]|$)/.test(path)) return "fontWeight";
+  if (/(^|[.-])lineHeight([.-]|$)/.test(path)) return "number";
+  if (/(^|[.-])duration([.-]|$)/.test(path)) return "duration";
+  if (/(^|[.-])easing([.-]|$)/.test(path)) return "cubicBezier";
+  if (/(^|[.-])(shadow|elevation|edge)([.-]|$)/.test(path)) return "shadow";
+  if (typeof resolvedValue === "string" && /^#[0-9a-f]{3,8}$/i.test(resolvedValue.trim()))
+    return "color";
+  if (/(^|[.-])color([.-]|$)/.test(path)) return "color";
+  return undefined;
+}
+
+/** Nest a dotted key into an object tree. */
+function nest(target, dotted, token) {
+  const parts = dotted.split(".");
+  let node = target;
+  for (const part of parts.slice(0, -1)) {
+    node[part] = node[part] ?? {};
+    node = node[part];
+  }
+  node[parts[parts.length - 1]] = token;
+}
+
+/** "surface-raised" and "color.graphite.850" both become dot paths. */
+const dotted = (key) => key.split(".").join(".").split("-").join(".");
+
+function primitiveTree() {
+  const out = {};
+  for (const [path, { value }] of primitiveVars) {
+    const type = dtcgType(path, value);
+    nest(out, path, { $value: value, ...(type ? { $type: type } : {}) });
+  }
+  return out;
+}
+
+/**
+ * Export one tier of one theme, rewriting `{reference}` into a DTCG alias that
+ * points at a path which exists in this file.
+ */
+function tierTree(source, resolved, theme) {
+  const out = {};
+  for (const [key, raw] of Object.entries(source)) {
+    const ref = typeof raw === "string" ? (raw.match(/^\{([^}]+)\}$/) || [])[1] : null;
+    let value;
+    if (!ref) {
+      value = raw;
+    } else if (primitiveVars.has(ref)) {
+      value = `{primitive.${ref}}`;
+    } else {
+      // A role or another component token, always within this same theme.
+      const tier = ref in componentTokens ? "component" : "semantic";
+      value = `{theme.${theme}.${tier}.${dotted(ref)}}`;
+    }
+    // `resolved` still holds var() indirection, so resolve the alias chain all
+    // the way to a primitive before asking what type this is. The reference path
+    // is consulted as well as the token's own name, because a role can be named
+    // for its use rather than its kind: `inset-well` is a shadow, and only
+    // `{shadow.wellDark}` on the other side of the alias says so.
+    const type =
+      dtcgType(key, flatten(key, theme) ?? resolved[key]) ??
+      (ref ? dtcgType(ref, undefined) : undefined);
+    nest(out, dotted(key), { $value: value, ...(type ? { $type: type } : {}) });
+  }
+  return out;
+}
+
+/**
+ * Fill in any $type still missing by following the alias to its target.
+ *
+ * Guessing from a name gets most of them and cannot get all of them: a token
+ * two hops from its primitive, `field-well` to `inset-well` to
+ * `{shadow.wellDark}`, is named for neither its kind nor its source. Rather
+ * than special-case it, the tree is walked once at the end and each unresolved
+ * token inherits the type of whatever it points at. The alias graph already
+ * knows; it just has to be asked.
+ */
+function inheritTypes(tree) {
+  const at = (path) => path.split(".").reduce((o, k) => (o ? o[k] : undefined), tree);
+
+  const resolveType = (node, seen) => {
+    if (!node) return undefined;
+    if (node.$type) return node.$type;
+    const v = node.$value;
+    if (typeof v !== "string" || !v.startsWith("{")) return undefined;
+    const target = v.slice(1, -1);
+    if (seen.has(target)) return undefined; // a cycle the generator should have caught
+    seen.add(target);
+    return resolveType(at(target), seen);
+  };
+
+  (function walk(node) {
+    if (!node || typeof node !== "object") return;
+    if ("$value" in node) {
+      if (!node.$type) {
+        const t = resolveType(node, new Set());
+        if (t) node.$type = t;
+      }
+      return;
+    }
+    for (const key of Object.keys(node)) if (!key.startsWith("$")) walk(node[key]);
+  })(tree);
+
+  return tree;
+}
+
+const tokensJson = JSON.stringify(
+  inheritTypes({
+    $description:
+      "Verdict design tokens, W3C Design Tokens Community Group format. " +
+      "GENERATED from src/lib/tokens.ts by scripts/build-tokens.mjs; edit the source, never this file. " +
+      "Aliases are preserved rather than flattened, so the three-tier structure survives the export. " +
+      "Each theme is complete and can be imported on its own.",
+    primitive: primitiveTree(),
+    theme: {
+      light: {
+        semantic: tierTree(semanticLight, light, "light"),
+        component: tierTree(componentTokens, comp, "light"),
+      },
+      dark: {
+        semantic: tierTree(semanticDark, dark, "dark"),
+        component: tierTree(componentTokens, comp, "dark"),
+      },
+    },
+  }),
+  null,
+  2
+) + "\n";
+
 if (process.argv.includes("--check")) {
   let stale = false;
-  for (const [path, next] of [[OUT_CSS, css], [OUT_JSON, json]]) {
+  for (const [path, next] of [[OUT_CSS, css], [OUT_JSON, json], [OUT_TOKENS, tokensJson]]) {
     let current = "";
     try { current = readFileSync(path, "utf8"); } catch { current = ""; }
     if (current !== next) {
@@ -346,15 +517,17 @@ if (process.argv.includes("--check")) {
     }
   }
   if (stale) process.exit(1);
-  console.log("✓ Verdict tokens.css and contrast.json are current.");
+  console.log("✓ Verdict tokens.css, contrast.json and tokens.json are current.");
 } else {
   mkdirSync(dirname(OUT_CSS), { recursive: true });
   writeFileSync(OUT_CSS, css);
   writeFileSync(OUT_JSON, json);
+  writeFileSync(OUT_TOKENS, tokensJson);
   console.log(
     `✓ Verdict tokens built\n` +
     `  → src/styles/tokens.css\n` +
-    `  → src/lib/contrast.json\n\n` +
+    `  → src/lib/contrast.json\n` +
+    `  → src/lib/tokens.json   (W3C DTCG, aliases preserved)\n\n` +
     `  ${primitiveVars.size} primitives · ${Object.keys(dark).length} semantic roles (× 2 themes) · ${Object.keys(comp).length} component tokens\n` +
     `  Cascade verified: 0 tier violations.\n` +
     `  Contrast: ${measurements.length} pairs measured, 0 below gate. ` +

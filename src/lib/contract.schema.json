@@ -1,0 +1,392 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bindustudio.dev/verdict/contract.schema.json",
+  "title": "Verdict, data contract",
+  "description": "GENERATED from src/lib/types.ts by scripts/build-contract.mjs. The shape the Verdict interface requires in order to render, extracted from the types the components are written against. This is not an API design: there is no auth, pagination, error model or transport here, and none of that was designed. It states what the screens need, so a service can be built to satisfy it and checked against it.",
+  "type": "object",
+  "properties": {
+    "case": {
+      "$ref": "#/definitions/CaseRecord"
+    },
+    "policy": {
+      "$ref": "#/definitions/Policy"
+    }
+  },
+  "required": [
+    "case",
+    "policy"
+  ],
+  "definitions": {
+    "RiskBand": {
+      "type": "number",
+      "enum": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "description": "Ordinal risk, 1 (lowest) to 4 (highest). Never rendered by colour alone."
+    },
+    "Decision": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "decline",
+        "escalate"
+      ]
+    },
+    "SignalCategory": {
+      "type": "string",
+      "enum": [
+        "device",
+        "velocity",
+        "identity",
+        "history",
+        "geography",
+        "payment"
+      ]
+    },
+    "Signal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "description": "Plain sentence, present tense, no jargon. This is read in about 2 seconds."
+        },
+        "detail": {
+          "type": "string",
+          "description": "The specific number or fact behind the label, shown on the same row."
+        },
+        "weight": {
+          "type": "number",
+          "description": "Points this signal contributed to the score. Positive pushes toward decline, negative pushes toward approve. Signed on purpose: a reviewer needs to see what argued *for* the customer, not only what argued against."
+        },
+        "category": {
+          "$ref": "#/definitions/SignalCategory"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "detail",
+        "weight",
+        "category"
+      ],
+      "additionalProperties": false
+    },
+    "CustomerRecord": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "since": {
+          "type": "string"
+        },
+        "orders": {
+          "type": "number"
+        },
+        "disputes": {
+          "type": "number"
+        },
+        "lifetimeValue": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "id",
+        "since",
+        "orders",
+        "disputes",
+        "lifetimeValue"
+      ],
+      "additionalProperties": false
+    },
+    "CardRecord": {
+      "type": "object",
+      "properties": {
+        "brand": {
+          "type": "string"
+        },
+        "last4": {
+          "type": "string"
+        },
+        "bin": {
+          "type": "string"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "addedAgo": {
+          "type": "string",
+          "description": "Present only when the card is new to this customer."
+        }
+      },
+      "required": [
+        "brand",
+        "last4",
+        "bin",
+        "issuer",
+        "country"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceRecord": {
+      "type": "object",
+      "properties": {
+        "fingerprint": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "ip": {
+          "type": "string"
+        },
+        "ipCountry": {
+          "type": "string"
+        },
+        "firstSeen": {
+          "type": "string"
+        },
+        "sharedWith": {
+          "type": "number",
+          "description": "Number of other customer accounts seen on this device."
+        }
+      },
+      "required": [
+        "fingerprint",
+        "platform",
+        "ip",
+        "ipCountry",
+        "firstSeen",
+        "sharedWith"
+      ],
+      "additionalProperties": false
+    },
+    "TimelineEvent": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "tone": {
+          "type": "string",
+          "enum": [
+            "neutral",
+            "concerning",
+            "reassuring"
+          ]
+        }
+      },
+      "required": [
+        "at",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "LinkedEntity": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "device",
+            "card",
+            "email",
+            "address"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "number",
+          "description": "How many other cases in the queue touch this same entity."
+        },
+        "band": {
+          "$ref": "#/definitions/RiskBand"
+        }
+      },
+      "required": [
+        "kind",
+        "label",
+        "cases",
+        "band"
+      ],
+      "additionalProperties": false
+    },
+    "FlagReason": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "score"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "rule"
+            },
+            "rule": {
+              "type": "string"
+            },
+            "detail": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "rule",
+            "detail"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "Why this case is in front of a human.\n\nThe score is not the only way into the queue, and pretending it is produces a screen that cannot explain itself. Merchants buy rules (\"look at everything over three thousand\"), compliance imposes them, and a watchlist hit forces review no matter how calm the model is. A reviewer opening a case that scored 28 needs to be told immediately that a rule pulled it in, or they will assume the tool is wasting their time, and on the fourth occurrence they will start clearing that whole class of case without reading it."
+    },
+    "CaseRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "merchant": {
+          "type": "string"
+        },
+        "merchantCategory": {
+          "type": "string"
+        },
+        "flaggedMinsAgo": {
+          "type": "number",
+          "description": "Minutes since the model flagged it. Drives queue ageing."
+        },
+        "expiresInMins": {
+          "type": "number",
+          "description": "Minutes until the authorisation expires and the decision is made for you."
+        },
+        "score": {
+          "type": "number"
+        },
+        "confidence": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "The model's uncertainty, as a [low, high] span around the score. Shown because a bare point estimate gets either obeyed or ignored, and both of those are failures."
+        },
+        "band": {
+          "$ref": "#/definitions/RiskBand"
+        },
+        "flagReason": {
+          "$ref": "#/definitions/FlagReason"
+        },
+        "customer": {
+          "$ref": "#/definitions/CustomerRecord"
+        },
+        "card": {
+          "$ref": "#/definitions/CardRecord"
+        },
+        "device": {
+          "$ref": "#/definitions/DeviceRecord"
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Signal"
+          }
+        },
+        "timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TimelineEvent"
+          }
+        },
+        "linked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LinkedEntity"
+          }
+        },
+        "decision": {
+          "$ref": "#/definitions/Decision"
+        }
+      },
+      "required": [
+        "id",
+        "amount",
+        "currency",
+        "merchant",
+        "merchantCategory",
+        "flaggedMinsAgo",
+        "expiresInMins",
+        "score",
+        "confidence",
+        "band",
+        "flagReason",
+        "customer",
+        "card",
+        "device",
+        "signals",
+        "timeline",
+        "linked"
+      ],
+      "additionalProperties": false
+    },
+    "Policy": {
+      "type": "object",
+      "properties": {
+        "threshold": {
+          "type": "number"
+        },
+        "setBy": {
+          "type": "string"
+        },
+        "setAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "threshold",
+        "setBy",
+        "setAt"
+      ],
+      "additionalProperties": false,
+      "description": "Where the score threshold currently sits, and who moved it last."
+    }
+  }
+}

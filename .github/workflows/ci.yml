@@ -36,6 +36,12 @@ jobs:
       - name: Tokens are current
         run: npm run tokens:check
 
+      # The published JSON Schema must match the types the components are
+      # written against, and the fixtures the interface actually renders must
+      # satisfy it. A contract nothing is checked against is a document.
+      - name: Data contract is current, and the fixtures satisfy it
+        run: npm run contract:check
+
       - name: Types
         run: npm run typecheck
 
