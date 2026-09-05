@@ -1,0 +1,1675 @@
+/*
+ * Verdict — prototype stylesheet.
+ *
+ * Every value below resolves through the generated cascade in tokens.css. There
+ * is no raw hex in this file, and a lint rule enforces that rather than trusting
+ * it. Spacing and type primitives are used directly, which is the one stated
+ * exception in src/lib/tokens.ts.
+ *
+ * Scoped to [data-verdict] throughout so the prototype's system and the
+ * portfolio's own can share a document.
+ *
+ * ── Where the depth comes from ────────────────────────────────────────────
+ * Four things, applied consistently, and none of them is a big drop shadow:
+ *   1. Four real surface steps, used as four real steps.
+ *   2. A one-pixel light catch on the top edge of every raised surface.
+ *   3. Two-layer shadows: a tight contact shadow plus a diffuse ambient one.
+ *   4. Recessed wells for anything the interface treats as an instrument.
+ */
+
+[data-verdict] {
+  font-family: var(--vd-fontFamily-sans);
+  font-size: var(--vd-fontSize-md);
+  line-height: var(--vd-lineHeight-normal);
+  color: var(--vd-text-primary);
+  background: var(--vd-shell-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-verdict] *,
+[data-verdict] *::before,
+[data-verdict] *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * Form-element reset, wrapped in :where() so it carries zero specificity.
+ *
+ * This is not a style preference. Written as `[data-verdict] button` the
+ * selector scores (0,1,1), which beats every single-class variant in this
+ * file, and `color: inherit` then silently overrode `.vd-btn--accent`,
+ * `--approve`, `--decline` and the rest. Every button rendered in the
+ * inherited body colour and the whole per-variant colour contract was inert
+ * while looking, in the dark theme, almost right.
+ *
+ * The token generator could not see it: it measures declared pairs, and the
+ * pair it measured was the one the tokens described rather than the one the
+ * cascade produced. Axe, running over the real DOM in Storybook, measured the
+ * pixels and put the accent button at 4.42:1 against a 4.5 bar.
+ *
+ * :where() keeps the reset doing its job and stops it winning arguments.
+ */
+[data-verdict] :where(button, input, select) {
+  font: inherit;
+  color: inherit;
+}
+
+/* One focus treatment, everywhere, never removed. */
+[data-verdict] :focus-visible {
+  outline: 2px solid var(--vd-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--vd-radius-inset);
+}
+
+.vd-mono {
+  font-family: var(--vd-fontFamily-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--vd-letterSpacing-tight);
+}
+
+/* Uppercase micro-label. Caps without tracking is a legibility bug. */
+.vd-eyebrow {
+  font-size: var(--vd-fontSize-2xs);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-caps);
+  text-transform: uppercase;
+  color: var(--vd-text-tertiary);
+}
+
+.vd-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── APP SHELL ───────────────────────────────────────────────────────────── */
+
+.vd-shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  min-height: 100%;
+  background: var(--vd-shell-bg);
+  /* The shell is not flat. A single very low-contrast wash keeps the
+     background from reading as dead paint behind the panels. */
+  background-image: radial-gradient(
+    120% 90% at 18% 0%,
+    var(--vd-surface-raised) 0%,
+    transparent 62%
+  );
+  background-attachment: local;
+  position: relative;
+  overflow: hidden;
+}
+
+.vd-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-5);
+  padding: 0 var(--vd-space-5);
+  height: 52px;
+  background: var(--vd-shell-topbar-bg);
+  border-bottom: 1px solid var(--vd-shell-topbar-border);
+  box-shadow: var(--vd-panel-edge), var(--vd-elevation-resting);
+  position: relative;
+  z-index: 4;
+}
+
+.vd-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-3);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-tight);
+  font-size: var(--vd-fontSize-lg);
+}
+
+/* The mark: a scale with a notch on it. The product in one glyph. */
+.vd-brand__mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--vd-radius-inset);
+  background: var(--vd-surface-accent);
+  box-shadow: var(--vd-elevation-resting);
+}
+
+.vd-topbar__spacer { flex: 1; }
+
+.vd-shift {
+  display: flex;
+  align-items: baseline;
+  gap: var(--vd-space-3);
+}
+
+.vd-shift__bar {
+  width: 96px;
+  height: 5px;
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-progress-track);
+  box-shadow: var(--vd-inset-well);
+  overflow: hidden;
+  display: block;
+}
+
+.vd-shift__fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-progress-fill);
+  transition: width var(--vd-duration-slow) var(--vd-easing-standard);
+}
+
+.vd-body {
+  display: grid;
+  grid-template-columns: 296px 1fr;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1080px) {
+  .vd-body { grid-template-columns: 1fr; }
+  .vd-rail { display: none; }
+}
+
+/* ── QUEUE RAIL ──────────────────────────────────────────────────────────── */
+
+.vd-rail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--vd-shell-rail-bg);
+  border-right: 1px solid var(--vd-shell-rail-border);
+}
+
+.vd-rail__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vd-space-3);
+  padding: var(--vd-space-4) var(--vd-space-5) var(--vd-space-3);
+}
+
+.vd-rail__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--vd-space-3) var(--vd-space-5);
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1;
+  scrollbar-width: thin;
+}
+
+.vd-case-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--vd-space-1) var(--vd-space-3);
+  width: 100%;
+  text-align: left;
+  padding: var(--vd-space-3) var(--vd-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--vd-radius-control);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--vd-duration-fast) var(--vd-easing-standard),
+    border-color var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-case-row:hover { background: var(--vd-row-bg-hover); }
+
+.vd-case-row[aria-current="true"] {
+  background: var(--vd-row-bg-selected);
+  border-color: var(--vd-border-accent);
+}
+
+/* The active marker is a bar, not only a fill: selection has to survive a
+   greyscale screenshot and a colour-blind reviewer. */
+.vd-case-row[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-row-marker-active);
+}
+
+/*
+ * A decided row recedes, and stays readable.
+ *
+ * This was `opacity: 0.55`, which is the cheap way to say "done" and which
+ * composited every text colour in the row down with it. The merchant name
+ * ended up at 2.66:1. The token file could not see it, because the generator
+ * measures declared pairs and opacity is applied long after a pair is
+ * declared, and the screens never showed it, because a decided row only exists
+ * once you have worked part of a queue.
+ *
+ * The state is carried by colour and by the word "decided" already printed in
+ * the row, both of which survive a contrast check. The badge keeps its own
+ * colour: a decided row is still a row you scroll back to.
+ */
+.vd-case-row--decided { color: var(--vd-row-decided-fg); }
+
+.vd-case-row--decided .vd-case-row__amount,
+.vd-case-row--decided .vd-case-row__id {
+  color: var(--vd-row-decided-fg);
+}
+
+.vd-case-row__id {
+  font-size: var(--vd-fontSize-sm);
+  font-weight: var(--vd-fontWeight-medium);
+}
+
+.vd-case-row__amount {
+  font-size: var(--vd-fontSize-sm);
+  font-weight: var(--vd-fontWeight-semibold);
+  text-align: right;
+}
+
+.vd-case-row__meta {
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-row-meta-fg);
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-2);
+  min-width: 0;
+}
+
+.vd-case-row__merchant {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vd-case-row__right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--vd-space-2);
+}
+
+/* ── MAIN COLUMN ─────────────────────────────────────────────────────────── */
+
+.vd-main {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scroll-behavior: smooth;
+}
+
+.vd-main__inner {
+  flex: 1;
+  padding: var(--vd-space-7) var(--vd-space-8) var(--vd-space-11);
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vd-space-6);
+}
+
+@media (max-width: 720px) {
+  .vd-main__inner { padding: var(--vd-space-5) var(--vd-space-5) var(--vd-space-11); }
+}
+
+/* ── CASE HEADER ─────────────────────────────────────────────────────────── */
+
+.vd-case-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--vd-space-5);
+}
+
+.vd-case-head__id {
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-3);
+  margin-bottom: var(--vd-space-2);
+}
+
+.vd-case-head__amount {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-3xl);
+  font-weight: var(--vd-fontWeight-medium);
+  letter-spacing: var(--vd-letterSpacing-tight);
+  line-height: var(--vd-lineHeight-tight);
+}
+
+.vd-case-head__sub {
+  font-size: var(--vd-fontSize-md);
+  color: var(--vd-text-secondary);
+  margin-top: var(--vd-space-2);
+}
+
+/* Why the case is here. Set as a quiet inline note rather than a banner: it is
+   always present, so it must never shout. */
+.vd-reason {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--vd-space-3);
+  margin-top: var(--vd-space-3);
+  font-size: var(--vd-fontSize-sm);
+  color: var(--vd-text-secondary);
+  max-width: 72ch;
+}
+
+.vd-reason__key {
+  font-size: var(--vd-fontSize-2xs);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-caps);
+  text-transform: uppercase;
+  color: var(--vd-text-tertiary);
+  padding: 2px var(--vd-space-3);
+  border-radius: var(--vd-radius-pill);
+  border: 1px solid var(--vd-chip-border);
+  background: var(--vd-chip-bg);
+  white-space: nowrap;
+}
+
+.vd-expiry {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--vd-space-1);
+  text-align: right;
+}
+
+.vd-expiry__value {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-xl);
+  font-weight: var(--vd-fontWeight-medium);
+}
+
+.vd-expiry--urgent .vd-expiry__value { color: var(--vd-decision-decline-fg); }
+
+/* ── PANEL ───────────────────────────────────────────────────────────────── */
+
+.vd-panel {
+  background: var(--vd-panel-bg);
+  border: 1px solid var(--vd-panel-border);
+  border-radius: var(--vd-panel-radius);
+  box-shadow: var(--vd-panel-edge), var(--vd-panel-shadow);
+  overflow: hidden;
+}
+
+.vd-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vd-space-4);
+  padding: var(--vd-space-4) var(--vd-space-5);
+  border-bottom: 1px solid var(--vd-panel-border);
+}
+
+.vd-panel__body { padding: var(--vd-space-5); }
+.vd-panel__body--flush { padding: 0; }
+
+.vd-grid-2 {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: var(--vd-space-6);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .vd-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ── SCORE INSTRUMENT ────────────────────────────────────────────────────────
+ * The signature element. A recessed well carrying a graduated risk ramp, the
+ * model's point estimate, its confidence span, and the live policy threshold.
+ *
+ * The ramp is a gradient rather than four blocks on purpose: risk is ordinal
+ * and continuous, and four hard blocks would be four categories wearing one
+ * hue. Band boundaries are carried by ticks and printed ranges instead, which
+ * is why those are the parts held to a contrast gate.
+ */
+
+.vd-instrument { display: flex; flex-direction: column; gap: var(--vd-space-4); }
+
+.vd-instrument__readout {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--vd-space-5);
+  flex-wrap: wrap;
+}
+
+.vd-instrument__score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--vd-space-3);
+}
+
+.vd-instrument__value {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-4xl);
+  font-weight: var(--vd-fontWeight-medium);
+  line-height: var(--vd-lineHeight-flat);
+  letter-spacing: var(--vd-letterSpacing-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.vd-instrument__of {
+  font-size: var(--vd-fontSize-md);
+  color: var(--vd-text-tertiary);
+}
+
+.vd-instrument__confidence-note {
+  font-size: var(--vd-fontSize-sm);
+  color: var(--vd-text-secondary);
+  text-align: right;
+  max-width: 34ch;
+}
+
+/* The well itself. Recessed, not drawn on. */
+.vd-track {
+  position: relative;
+  height: 46px;
+  border-radius: var(--vd-radius-control);
+  background: var(--vd-instrument-well-bg);
+  box-shadow: var(--vd-instrument-well-shadow);
+  overflow: hidden;
+}
+
+/*
+ * Stops sit at the CENTRE of each band, not at its edges: 0–39 centres on 19.5,
+ * 40–64 on 52, 65–84 on 74.5, 85–100 on 92.5. Each band therefore shows its own
+ * pure value in the middle and hands over across the boundary, which puts the
+ * steepest colour change exactly where the tick mark is. Stops placed at the
+ * edges instead make the transitions land between the ticks, and the scale
+ * reads as though the graphic and the graduations disagree.
+ */
+.vd-track__ramp {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--vd-instrument-band-1) 0%,
+    var(--vd-instrument-band-1) 19.5%,
+    var(--vd-instrument-band-2) 52%,
+    var(--vd-instrument-band-3) 74.5%,
+    var(--vd-instrument-band-4) 92.5%,
+    var(--vd-instrument-band-4) 100%
+  );
+}
+
+/* Fine graduations, the way a measuring instrument is graduated. Decorative
+   only: the numbers that matter are printed under the scale. */
+.vd-track__graduations {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--vd-instrument-well-bg) 0px,
+    var(--vd-instrument-well-bg) 1px,
+    transparent 1px,
+    transparent 10%
+  );
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+/*
+ * Band boundary ticks. These carry the band information rather than the colour
+ * transition doing it, so they get the same halo treatment as the threshold: a
+ * dark edge on each side guarantees separation from whatever part of the ramp
+ * they land on, which no single colour value could promise across four bands.
+ */
+.vd-track__tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--vd-instrument-tick);
+  box-shadow:
+    -1px 0 0 var(--vd-instrument-well-bg),
+    1px 0 0 var(--vd-instrument-well-bg);
+}
+
+/* The model's uncertainty, as a span. Hatched rather than filled so it never
+   reads as another band. */
+.vd-track__confidence {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--vd-instrument-confidence) 0px,
+    var(--vd-instrument-confidence) 1.5px,
+    transparent 1.5px,
+    transparent 6px
+  );
+  border-left: 1px solid var(--vd-instrument-confidence);
+  border-right: 1px solid var(--vd-instrument-confidence);
+  opacity: 0.75;
+  transition:
+    left var(--vd-duration-deliberate) var(--vd-easing-standard),
+    width var(--vd-duration-deliberate) var(--vd-easing-standard);
+}
+
+/* The threshold. Drawn with a halo in the well colour so it separates from
+   whatever part of the ramp it lands on. */
+.vd-track__threshold {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--vd-instrument-threshold);
+  box-shadow:
+    0 0 0 1.5px var(--vd-instrument-threshold-halo),
+    0 0 10px 0 var(--vd-instrument-threshold);
+  transition: left var(--vd-duration-slow) var(--vd-easing-standard);
+}
+
+/* The point estimate. A vertical blade with a cap, so it is identifiable by
+   shape and not only by colour or position. */
+.vd-track__marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 3px;
+  background: var(--vd-instrument-marker);
+  box-shadow: 0 0 0 2px var(--vd-instrument-marker-ring);
+  border-radius: var(--vd-radius-pill);
+  transition: left var(--vd-duration-deliberate) var(--vd-easing-standard);
+}
+
+.vd-track__marker::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--vd-instrument-marker);
+  box-shadow: 0 0 0 2px var(--vd-instrument-marker-ring);
+  border-radius: 2px;
+}
+
+.vd-scale {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: 39fr 25fr 20fr 16fr;
+}
+
+.vd-scale__band {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vd-space-1);
+  padding: var(--vd-space-2) var(--vd-space-3);
+  border-radius: var(--vd-radius-inset);
+  border: 1px solid transparent;
+}
+
+.vd-scale__band[data-active="true"] {
+  border-color: var(--vd-border-accent);
+  background: var(--vd-surface-accent-subtle);
+}
+
+.vd-scale__rank {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-2xs);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-caps);
+}
+
+.vd-scale__label {
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-text-secondary);
+}
+
+.vd-scale__range {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-2xs);
+  color: var(--vd-instrument-label-fg);
+}
+
+.vd-instrument__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vd-space-3) var(--vd-space-6);
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-text-secondary);
+}
+
+.vd-legend-key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vd-space-3);
+}
+
+.vd-legend-key__swatch {
+  width: 18px;
+  height: 10px;
+  flex: none;
+  border-radius: 2px;
+}
+
+/* The key matches the mark it stands for: a blade with a diamond cap, not a
+   generic rectangle. A legend that does not look like the thing is a second
+   thing to learn. */
+.vd-legend-key__swatch--marker {
+  position: relative;
+  width: 12px;
+  background: transparent;
+}
+
+.vd-legend-key__swatch--marker::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  transform: translateX(-50%);
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-instrument-marker);
+}
+
+.vd-legend-key__swatch--marker::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 1px;
+  background: var(--vd-instrument-marker);
+}
+.vd-legend-key__swatch--threshold { background: var(--vd-instrument-threshold); }
+.vd-legend-key__swatch--confidence {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--vd-instrument-confidence) 0px,
+    var(--vd-instrument-confidence) 1.5px,
+    transparent 1.5px,
+    transparent 5px
+  );
+  border: 1px solid var(--vd-instrument-confidence);
+}
+
+/* ── RISK BADGE ──────────────────────────────────────────────────────────── */
+
+.vd-risk {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vd-space-2);
+  padding: 2px var(--vd-space-3) 2px var(--vd-space-2);
+  border-radius: var(--vd-radius-pill);
+  border: 1px solid;
+  font-size: var(--vd-fontSize-2xs);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-wide);
+  white-space: nowrap;
+}
+
+.vd-risk__rank {
+  font-family: var(--vd-fontFamily-mono);
+  padding: 0 var(--vd-space-2);
+  border-radius: var(--vd-radius-pill);
+  background: rgb(0 0 0 / 0.22);
+}
+
+.vd-risk--1 { color: var(--vd-risk-1-fg); background: var(--vd-risk-1-bg); border-color: var(--vd-risk-1-border); }
+.vd-risk--2 { color: var(--vd-risk-2-fg); background: var(--vd-risk-2-bg); border-color: var(--vd-risk-2-border); }
+.vd-risk--3 { color: var(--vd-risk-3-fg); background: var(--vd-risk-3-bg); border-color: var(--vd-risk-3-border); }
+.vd-risk--4 { color: var(--vd-risk-4-fg); background: var(--vd-risk-4-bg); border-color: var(--vd-risk-4-border); }
+
+.vd-risk--compact { padding: 1px var(--vd-space-2); }
+
+/* ── SIGNALS ─────────────────────────────────────────────────────────────── */
+
+.vd-signals { list-style: none; margin: 0; padding: 0; }
+
+.vd-signal {
+  display: grid;
+  grid-template-columns: 76px 1fr auto;
+  gap: var(--vd-space-4);
+  align-items: center;
+  padding: var(--vd-space-4) var(--vd-space-5);
+  border-bottom: 1px solid var(--vd-signal-border);
+}
+
+.vd-signal:last-child { border-bottom: 0; }
+
+@media (max-width: 640px) {
+  .vd-signal { grid-template-columns: 1fr auto; }
+  .vd-signal__gauge { grid-column: 1 / -1; order: 3; }
+}
+
+/* A signed bar on a shared centre line. Direction is position, not colour, so
+   "argued for the customer" survives greyscale. */
+.vd-signal__gauge {
+  position: relative;
+  height: 16px;
+  border-radius: var(--vd-radius-inset);
+  background: var(--vd-signal-track);
+  box-shadow: var(--vd-inset-well);
+}
+
+/* The centre line is the whole reading. Without it a bar has no direction, and
+   direction is what carries "this argued for the customer". */
+.vd-signal__gauge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--vd-border-strong);
+  z-index: 1;
+}
+
+.vd-signal__fill {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 2px;
+  transition: width var(--vd-duration-slow) var(--vd-easing-decelerate);
+}
+
+.vd-signal__fill--up { left: 50%; background: var(--vd-signal-weight-up); }
+.vd-signal__fill--down { right: 50%; background: var(--vd-signal-weight-down); }
+
+.vd-signal__label {
+  font-size: var(--vd-fontSize-md);
+  color: var(--vd-signal-fg);
+}
+
+.vd-signal__detail {
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-signal-meta-fg);
+  margin-top: 1px;
+}
+
+.vd-signal__weight {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-sm);
+  font-weight: var(--vd-fontWeight-medium);
+  text-align: right;
+  min-width: 4ch;
+}
+
+.vd-signal__weight--up { color: var(--vd-signal-weight-up); }
+.vd-signal__weight--down { color: var(--vd-signal-weight-down); }
+
+.vd-signal__cat {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--vd-letterSpacing-caps);
+  color: var(--vd-text-tertiary);
+}
+
+.vd-signals__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vd-space-4);
+  padding: var(--vd-space-4) var(--vd-space-5);
+  border-top: 1px solid var(--vd-signal-border);
+  background: var(--vd-signal-bg);
+  font-size: var(--vd-fontSize-sm);
+  color: var(--vd-text-secondary);
+}
+
+/* ── FACTS ───────────────────────────────────────────────────────────────── */
+
+.vd-facts { display: flex; flex-direction: column; }
+
+.vd-facts__group + .vd-facts__group { border-top: 1px solid var(--vd-panel-border); }
+
+.vd-facts__title {
+  padding: var(--vd-space-4) var(--vd-space-5) var(--vd-space-2);
+}
+
+.vd-fact {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: var(--vd-space-4);
+  padding: var(--vd-space-2) var(--vd-space-5);
+  font-size: var(--vd-fontSize-sm);
+  align-items: baseline;
+}
+
+.vd-fact:last-child { padding-bottom: var(--vd-space-4); }
+
+.vd-fact__key { color: var(--vd-text-tertiary); }
+.vd-fact__value { color: var(--vd-text-primary); }
+.vd-fact__value--flag { color: var(--vd-risk-4-fg); }
+.vd-fact__value--good { color: var(--vd-decision-approve-fg); }
+
+/* ── ENTITY CHIPS ────────────────────────────────────────────────────────── */
+
+.vd-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vd-space-2);
+  padding: var(--vd-space-2) var(--vd-space-5) var(--vd-space-4);
+}
+
+.vd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vd-space-2);
+  padding: var(--vd-space-2) var(--vd-space-3);
+  border-radius: var(--vd-chip-radius);
+  border: 1px solid var(--vd-chip-border);
+  background: var(--vd-chip-bg);
+  color: var(--vd-chip-fg);
+  font-size: var(--vd-fontSize-xs);
+  cursor: pointer;
+  transition: border-color var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-chip:hover { border-color: var(--vd-border-accent); }
+.vd-chip__count {
+  font-family: var(--vd-fontFamily-mono);
+  color: var(--vd-entity-fg);
+  font-weight: var(--vd-fontWeight-medium);
+}
+
+/* ── TIMELINE ────────────────────────────────────────────────────────────── */
+
+.vd-timeline { list-style: none; margin: 0; padding: var(--vd-space-5); }
+
+.vd-tl {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: var(--vd-space-5);
+  padding-bottom: var(--vd-space-5);
+}
+
+.vd-tl:last-child { padding-bottom: 0; }
+
+.vd-tl::before {
+  content: "";
+  position: absolute;
+  left: 90px;
+  top: 14px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--vd-timeline-track);
+}
+
+.vd-tl:last-child::before { display: none; }
+
+.vd-tl__at {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-text-tertiary);
+  text-align: right;
+  padding-top: 1px;
+}
+
+.vd-tl__body { position: relative; padding-left: var(--vd-space-5); }
+
+.vd-tl__body::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-panel-bg);
+  border: 2px solid var(--vd-timeline-node);
+}
+
+.vd-tl--concerning .vd-tl__body::before { border-color: var(--vd-risk-4-solid); }
+.vd-tl--reassuring .vd-tl__body::before { border-color: var(--vd-decision-approve-vivid); }
+
+.vd-tl__label { font-size: var(--vd-fontSize-md); }
+.vd-tl__detail {
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-timeline-fg);
+  margin-top: 1px;
+}
+
+/* ── BUTTONS ─────────────────────────────────────────────────────────────── */
+
+.vd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vd-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--vd-btn-radius);
+  font-size: var(--vd-fontSize-sm);
+  font-weight: var(--vd-fontWeight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--vd-duration-fast) var(--vd-easing-standard),
+    border-color var(--vd-duration-fast) var(--vd-easing-standard),
+    transform var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-btn:disabled { cursor: not-allowed; color: var(--vd-btn-disabled-fg); }
+.vd-btn:not(:disabled):active { transform: translateY(0.5px); }
+
+.vd-btn--sm { height: 28px; padding: 0 var(--vd-space-4); }
+.vd-btn--md { height: 34px; padding: 0 var(--vd-space-5); }
+.vd-btn--lg { height: 42px; padding: 0 var(--vd-space-6); font-size: var(--vd-fontSize-md); }
+
+.vd-btn--accent {
+  background: var(--vd-btn-accent-bg);
+  color: var(--vd-btn-accent-fg);
+  box-shadow: var(--vd-elevation-resting);
+}
+
+.vd-btn--outline {
+  border-color: var(--vd-btn-outline-border);
+  color: var(--vd-btn-outline-fg);
+  background: transparent;
+}
+.vd-btn--outline:not(:disabled):hover { background: var(--vd-btn-quiet-bg-hover); }
+
+.vd-btn--quiet { color: var(--vd-btn-quiet-fg); background: transparent; }
+.vd-btn--quiet:not(:disabled):hover {
+  background: var(--vd-btn-quiet-bg-hover);
+  color: var(--vd-text-primary);
+}
+
+.vd-btn--approve {
+  background: var(--vd-approve-bg);
+  color: var(--vd-approve-fg);
+  box-shadow: var(--vd-elevation-resting);
+}
+
+.vd-btn--decline {
+  background: var(--vd-decline-bg);
+  color: var(--vd-decline-fg);
+  box-shadow: var(--vd-elevation-resting);
+}
+
+.vd-btn--escalate {
+  border-color: var(--vd-escalate-border);
+  color: var(--vd-escalate-fg);
+  background: transparent;
+}
+.vd-btn--escalate:not(:disabled):hover { background: var(--vd-btn-quiet-bg-hover); }
+
+.vd-kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--vd-radius-inset);
+  background: rgb(255 255 255 / 0.14);
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-2xs);
+  font-weight: var(--vd-fontWeight-semibold);
+}
+
+.vd-kbd--quiet {
+  background: var(--vd-surface-inset);
+  border: 1px solid var(--vd-border-default);
+  color: var(--vd-text-tertiary);
+}
+
+/* ── DECISION BAR ────────────────────────────────────────────────────────── */
+
+.vd-decision-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-4);
+  padding: var(--vd-space-4) var(--vd-space-8);
+  background: var(--vd-decision-bar-bg);
+  border-top: 1px solid var(--vd-decision-bar-border);
+  box-shadow: var(--vd-decision-bar-shadow);
+}
+
+.vd-decision-bar__hint {
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-text-tertiary);
+  margin-right: auto;
+}
+
+@media (max-width: 720px) {
+  .vd-decision-bar { padding: var(--vd-space-4) var(--vd-space-5); flex-wrap: wrap; }
+  .vd-decision-bar__hint { order: 3; width: 100%; margin-right: 0; }
+}
+
+/* ── UNDO TOAST ──────────────────────────────────────────────────────────── */
+
+/* Clears the decision bar rather than landing on top of it. The undo has to be
+   readable at the same time as the controls that produced it, because the
+   reviewer is deciding whether to reach for one of them. */
+.vd-toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: calc(74px + var(--vd-space-5));
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vd-space-3);
+  pointer-events: none;
+}
+
+.vd-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-5);
+  padding: var(--vd-space-4) var(--vd-space-4) var(--vd-space-4) var(--vd-space-6);
+  border-radius: var(--vd-radius-panel);
+  background: var(--vd-toast-bg);
+  border: 1px solid var(--vd-toast-border);
+  color: var(--vd-toast-fg);
+  box-shadow: var(--vd-panel-edge), var(--vd-toast-shadow);
+  min-width: 340px;
+  animation: vd-toast-in var(--vd-duration-deliberate) var(--vd-easing-spring) both;
+}
+
+@keyframes vd-toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.vd-toast__text { display: flex; flex-direction: column; gap: 1px; margin-right: auto; }
+.vd-toast__meta { font-size: var(--vd-fontSize-xs); color: var(--vd-toast-meta-fg); }
+
+/* Time remaining, drawn rather than described. A countdown in words is a
+   countdown nobody reads in the four seconds they have. */
+.vd-toast__timer {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+.vd-toast__timer svg { transform: rotate(-90deg); display: block; }
+.vd-toast__timer circle { fill: none; stroke-width: 2.5; }
+.vd-toast__timer .vd-toast__timer-track { stroke: var(--vd-toast-timer-track); }
+.vd-toast__timer .vd-toast__timer-fill {
+  stroke: var(--vd-toast-timer);
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--vd-duration-base) linear;
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────────────────── */
+
+.vd-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vd-space-4);
+  padding: var(--vd-space-12) var(--vd-space-8);
+  text-align: center;
+}
+
+.vd-empty__title { font-size: var(--vd-fontSize-xl); font-weight: var(--vd-fontWeight-medium); }
+.vd-empty__body { font-size: var(--vd-fontSize-md); color: var(--vd-text-secondary); max-width: 44ch; }
+
+/* ── TOOLTIP ─────────────────────────────────────────────────────────────── */
+
+.vd-tip {
+  padding: var(--vd-space-3) var(--vd-space-4);
+  border-radius: var(--vd-radius-inset);
+  background: var(--vd-tip-bg);
+  color: var(--vd-tip-fg);
+  font-size: var(--vd-fontSize-xs);
+  line-height: var(--vd-lineHeight-snug);
+  max-width: 30ch;
+  box-shadow: var(--vd-tip-shadow);
+  z-index: 30;
+  animation: vd-tip-in var(--vd-duration-fast) var(--vd-easing-decelerate) both;
+}
+
+@keyframes vd-tip-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── DECIDED STATE ───────────────────────────────────────────────────────── */
+
+.vd-verdict-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vd-space-3);
+  padding: var(--vd-space-2) var(--vd-space-4);
+  border-radius: var(--vd-radius-pill);
+  border: 1px solid;
+  font-size: var(--vd-fontSize-xs);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-wide);
+}
+
+.vd-verdict-stamp--approve {
+  color: var(--vd-decision-approve-fg);
+  background: var(--vd-decision-approve-bg);
+  border-color: var(--vd-decision-approve-border);
+}
+.vd-verdict-stamp--decline {
+  color: var(--vd-decision-decline-fg);
+  background: var(--vd-decision-decline-bg);
+  border-color: var(--vd-decision-decline-border);
+}
+.vd-verdict-stamp--escalate {
+  color: var(--vd-decision-escalate-fg);
+  background: var(--vd-decision-escalate-bg);
+  border-color: var(--vd-decision-escalate-border);
+}
+
+/* ── QUEUE SCREEN ────────────────────────────────────────────────────────── */
+
+.vd-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--vd-space-3) var(--vd-space-5);
+}
+
+.vd-toolbar__group { display: flex; flex-wrap: wrap; gap: var(--vd-space-2); }
+.vd-toolbar__spacer { flex: 1; }
+
+.vd-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vd-space-2);
+  height: 28px;
+  padding: 0 var(--vd-space-4);
+  border-radius: var(--vd-radius-pill);
+  border: 1px solid var(--vd-chip-border);
+  background: var(--vd-chip-bg);
+  color: var(--vd-chip-fg);
+  font-size: var(--vd-fontSize-xs);
+  cursor: pointer;
+  transition:
+    background-color var(--vd-duration-fast) var(--vd-easing-standard),
+    border-color var(--vd-duration-fast) var(--vd-easing-standard),
+    color var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-filter:hover { border-color: var(--vd-border-strong); }
+
+.vd-filter--on {
+  background: var(--vd-surface-accent-subtle);
+  border-color: var(--vd-border-accent);
+  color: var(--vd-text-primary);
+}
+
+.vd-filter__count { color: var(--vd-text-tertiary); font-size: var(--vd-fontSize-2xs); }
+.vd-filter--on .vd-filter__count { color: var(--vd-text-accent); }
+
+/* Segmented control */
+
+.vd-segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--vd-radius-control);
+  background: var(--vd-surface-inset);
+  box-shadow: var(--vd-inset-well);
+}
+
+.vd-segmented__item {
+  height: 24px;
+  padding: 0 var(--vd-space-4);
+  border: 0;
+  border-radius: var(--vd-radius-inset);
+  background: transparent;
+  color: var(--vd-text-tertiary);
+  font-size: var(--vd-fontSize-xs);
+  cursor: pointer;
+  transition:
+    background-color var(--vd-duration-fast) var(--vd-easing-standard),
+    color var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-segmented__item[data-state="on"] {
+  background: var(--vd-surface-raised);
+  color: var(--vd-text-primary);
+  box-shadow: var(--vd-elevation-resting);
+}
+
+/* Checkbox */
+
+.vd-checkbox {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border-radius: var(--vd-radius-inset);
+  border: 1px solid var(--vd-border-control);
+  background: var(--vd-field-bg);
+  cursor: pointer;
+  transition:
+    background-color var(--vd-duration-fast) var(--vd-easing-standard),
+    border-color var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-checkbox[data-state="checked"],
+.vd-checkbox[data-state="indeterminate"] {
+  background: var(--vd-surface-accent);
+  border-color: var(--vd-surface-accent);
+}
+
+.vd-checkbox__mark { display: grid; place-items: center; color: var(--vd-text-on-accent); }
+.vd-checkbox:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Table */
+
+.vd-table { width: 100%; border-collapse: collapse; font-size: var(--vd-fontSize-sm); }
+
+.vd-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  text-align: left;
+  font-size: var(--vd-fontSize-2xs);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-caps);
+  text-transform: uppercase;
+  color: var(--vd-header-fg);
+  background: var(--vd-header-bg);
+  padding: var(--vd-space-3) var(--vd-space-4);
+  border-bottom: 1px solid var(--vd-row-border);
+  white-space: nowrap;
+}
+
+.vd-table tbody th,
+.vd-table tbody td {
+  padding: var(--vd-space-4);
+  border-bottom: 1px solid var(--vd-row-border);
+  vertical-align: middle;
+  font-weight: var(--vd-fontWeight-regular);
+  text-align: left;
+}
+
+.vd-table--compact tbody th,
+.vd-table--compact tbody td { padding: var(--vd-space-2) var(--vd-space-4); }
+
+/* Density is a real density change, not just padding: the secondary line under
+   merchant and customer is what makes a comfortable row twice as tall, so
+   compact drops it rather than squashing it into an unreadable stack. */
+.vd-table--compact .vd-table__sub { display: none; }
+
+.vd-table tbody tr { transition: background-color var(--vd-duration-fast) var(--vd-easing-standard); }
+.vd-table tbody tr:hover { background: var(--vd-row-bg-hover); }
+.vd-table tbody tr[data-selected="true"] { background: var(--vd-row-bg-selected); }
+.vd-table tbody tr[data-decided="true"] { opacity: 0.5; }
+.vd-table tbody tr:last-child th,
+.vd-table tbody tr:last-child td { border-bottom: 0; }
+
+.vd-table__check { width: 40px; padding-left: var(--vd-space-5) !important; }
+.vd-table__num { text-align: right; }
+.vd-table__muted { color: var(--vd-text-tertiary); }
+.vd-table__urgent { color: var(--vd-decision-decline-fg); font-weight: var(--vd-fontWeight-medium); }
+
+.vd-table__sub {
+  display: block;
+  font-size: var(--vd-fontSize-2xs);
+  color: var(--vd-text-tertiary);
+  margin-top: 1px;
+}
+
+.vd-table__link {
+  color: var(--vd-entity-fg);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.vd-table__link:hover { border-bottom-color: var(--vd-entity-underline); }
+
+.vd-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vd-space-2);
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.vd-sort__arrow { color: var(--vd-text-disabled); font-size: 8px; }
+.vd-sort__arrow--on { color: var(--vd-text-accent); }
+
+/* Bulk bar */
+
+.vd-bulk {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-4);
+  padding: var(--vd-space-4) var(--vd-space-8);
+  background: var(--vd-decision-bar-bg);
+  border-top: 1px solid var(--vd-decision-bar-border);
+  box-shadow: var(--vd-decision-bar-shadow);
+  animation: vd-enter var(--vd-duration-base) var(--vd-easing-decelerate) both;
+}
+
+.vd-bulk__count { margin-right: auto; font-size: var(--vd-fontSize-sm); color: var(--vd-text-secondary); }
+
+@media (max-width: 720px) {
+  .vd-bulk { padding: var(--vd-space-4) var(--vd-space-5); flex-wrap: wrap; }
+  .vd-bulk__count { width: 100%; margin-right: 0; }
+}
+
+/* ── POLICY SCREEN ───────────────────────────────────────────────────────── */
+
+.vd-page-title {
+  font-size: var(--vd-fontSize-2xl);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-tight);
+  line-height: var(--vd-lineHeight-tight);
+}
+
+.vd-page-lede {
+  font-size: var(--vd-fontSize-md);
+  color: var(--vd-text-secondary);
+  max-width: 68ch;
+  margin-top: var(--vd-space-3);
+}
+
+.vd-panel__meta {
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-text-tertiary);
+}
+
+/* Distribution chart */
+
+.vd-chart { margin: 0; display: flex; flex-direction: column; gap: var(--vd-space-3); }
+
+.vd-chart__plot {
+  position: relative;
+  height: 168px;
+  border-radius: var(--vd-radius-control);
+  background: var(--vd-surface-inset);
+  box-shadow: var(--vd-inset-well);
+  overflow: hidden;
+}
+
+/* Everything at or above the threshold goes to a human. Drawn as one region so
+   that sentence is visible rather than inferred bar by bar. */
+.vd-chart__region {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: var(--vd-surface-accent-subtle);
+  border-left: 1px solid var(--vd-border-accent);
+  transition: left var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-chart__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.vd-chart__legit { fill: var(--vd-dist-bar); opacity: 0.55; }
+.vd-chart__fraud { fill: var(--vd-dist-bar-caught); }
+
+.vd-chart__threshold {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--vd-dist-threshold);
+  box-shadow: 0 0 0 1.5px var(--vd-surface-inset);
+  transition: left var(--vd-duration-fast) var(--vd-easing-standard);
+}
+
+.vd-chart__axis { position: relative; height: 16px; }
+
+.vd-chart__tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-2xs);
+  color: var(--vd-text-tertiary);
+}
+
+.vd-chart__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--vd-space-3) var(--vd-space-5);
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-text-secondary);
+}
+
+.vd-chart__legend { display: inline-flex; align-items: center; gap: var(--vd-space-3); }
+
+.vd-chart__key { width: 16px; height: 10px; border-radius: 2px; flex: none; }
+.vd-chart__key--legit { background: var(--vd-dist-bar); opacity: 0.55; }
+.vd-chart__key--fraud { background: var(--vd-dist-bar-caught); }
+.vd-chart__key--region {
+  background: var(--vd-surface-accent-subtle);
+  border-left: 2px solid var(--vd-border-accent);
+}
+
+.vd-chart__note { color: var(--vd-text-tertiary); margin-left: auto; }
+
+/* Slider */
+
+.vd-slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--vd-space-5);
+  margin-top: var(--vd-space-6);
+  flex-wrap: wrap;
+}
+
+.vd-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 240px;
+  height: 22px;
+  touch-action: none;
+  user-select: none;
+}
+
+.vd-slider__track {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-progress-track);
+  box-shadow: var(--vd-inset-well);
+}
+
+.vd-slider__range {
+  position: absolute;
+  height: 100%;
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-progress-fill);
+}
+
+.vd-slider__thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--vd-radius-pill);
+  background: var(--vd-surface-raised);
+  border: 2px solid var(--vd-border-accent);
+  box-shadow: var(--vd-elevation-raised);
+  cursor: grab;
+}
+
+.vd-slider__thumb:active { cursor: grabbing; }
+
+.vd-slider__value {
+  font-family: var(--vd-fontFamily-mono);
+  font-size: var(--vd-fontSize-2xl);
+  font-weight: var(--vd-fontWeight-medium);
+  min-width: 3ch;
+  text-align: right;
+}
+
+/* Comparison table */
+
+.vd-compare { width: 100%; border-collapse: collapse; font-size: var(--vd-fontSize-sm); }
+
+.vd-compare th,
+.vd-compare td {
+  text-align: right;
+  padding: var(--vd-space-3) var(--vd-space-5);
+  border-bottom: 1px solid var(--vd-panel-border);
+}
+
+.vd-compare thead th {
+  font-size: var(--vd-fontSize-2xs);
+  font-weight: var(--vd-fontWeight-semibold);
+  letter-spacing: var(--vd-letterSpacing-caps);
+  text-transform: uppercase;
+  color: var(--vd-header-fg);
+  background: var(--vd-header-bg);
+}
+
+.vd-compare th:first-child,
+.vd-compare td:first-child { text-align: left; }
+
+.vd-compare tbody th {
+  font-weight: var(--vd-fontWeight-regular);
+  color: var(--vd-text-secondary);
+}
+
+.vd-compare tbody tr:last-child th,
+.vd-compare tbody tr:last-child td { border-bottom: 0; }
+
+.vd-delta { font-size: var(--vd-fontSize-xs); }
+.vd-delta--good { color: var(--vd-decision-approve-fg); }
+.vd-delta--bad { color: var(--vd-decision-decline-fg); }
+.vd-delta--flat { color: var(--vd-text-tertiary); }
+
+.vd-compare__foot {
+  padding: var(--vd-space-4) var(--vd-space-5);
+  font-size: var(--vd-fontSize-xs);
+  color: var(--vd-text-tertiary);
+  border-top: 1px solid var(--vd-panel-border);
+  background: var(--vd-signal-bg);
+}
+
+/* Stage and confirm */
+
+.vd-stage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vd-space-5);
+  flex-wrap: wrap;
+}
+
+.vd-confirm { display: flex; flex-direction: column; gap: var(--vd-space-3); }
+
+.vd-confirm__summary {
+  font-size: var(--vd-fontSize-md);
+  line-height: var(--vd-lineHeight-relaxed);
+  max-width: 72ch;
+  margin-bottom: var(--vd-space-2);
+}
+
+.vd-field-label { font-size: var(--vd-fontSize-sm); font-weight: var(--vd-fontWeight-medium); }
+
+.vd-textarea {
+  width: 100%;
+  max-width: 62ch;
+  padding: var(--vd-space-3) var(--vd-space-4);
+  border-radius: var(--vd-field-radius);
+  border: 1px solid var(--vd-field-border);
+  background: var(--vd-field-bg);
+  color: var(--vd-field-fg);
+  box-shadow: var(--vd-field-well);
+  font-size: var(--vd-fontSize-sm);
+  line-height: var(--vd-lineHeight-normal);
+  resize: vertical;
+}
+
+.vd-textarea::placeholder { color: var(--vd-field-placeholder); }
+.vd-textarea:focus { border-color: var(--vd-field-border-focus); }
+
+.vd-field-help { font-size: var(--vd-fontSize-xs); color: var(--vd-text-tertiary); }
+
+.vd-confirm__actions {
+  display: flex;
+  gap: var(--vd-space-3);
+  margin-top: var(--vd-space-3);
+}
+
+.vd-applied { display: flex; flex-direction: column; gap: var(--vd-space-2); }
+.vd-applied__title { font-size: var(--vd-fontSize-lg); font-weight: var(--vd-fontWeight-medium); }
+.vd-applied__body { font-size: var(--vd-fontSize-sm); color: var(--vd-text-secondary); }
+
+/* ── ENTER MOTION ────────────────────────────────────────────────────────── */
+
+.vd-enter { animation: vd-enter var(--vd-duration-slow) var(--vd-easing-decelerate) both; }
+
+@keyframes vd-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/*
+ * Reduced motion. Everything that moves collapses to a plain state change,
+ * including the animations that convey information: the marker still lands in
+ * the right place, it just stops travelling there. Transitions are not merely
+ * shortened, because a 1ms transition still fires transitionend handlers and
+ * still costs a frame.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-verdict] *,
+  [data-verdict] *::before,
+  [data-verdict] *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* A tooltip trigger wrapped around content that is not itself a control.
+   It has to be a real button: the keyboard needs somewhere to land, and a
+   focusable <span> gives it a landing spot with nothing to announce. Everything
+   below is chrome removal, so the number still reads as a number. */
+.vd-tip-target {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: help;
+  border-radius: var(--vd-radius-xs);
+}
+
+.vd-tip-target:focus-visible {
+  outline: 2px solid var(--vd-focus-ring);
+  outline-offset: 2px;
+}

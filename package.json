@@ -1,0 +1,52 @@
+{
+  "name": "verdict-ds",
+  "version": "1.0.0",
+  "private": false,
+  "description": "A three-tier design token architecture and component library for a fraud-review console, with the constraints enforced at build rather than described in a README.",
+  "license": "MIT",
+  "_comment": "Every config file here is explicitly .mjs or .ts, so this package is CommonJS by default. That is deliberate: Jest loads test-runner-jest.config.js through require, before any ESM loader exists, and \"type\": \"module\" makes that file unloadable. Dependency versions are filled in by the extractor from the versions actually installed in the source repository, so this file cannot drift from what the system was built and verified against.",
+  "scripts": {
+    "tokens:build": "node scripts/build-tokens.mjs",
+    "tokens:check": "node scripts/build-tokens.mjs --check",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test:rules": "node eslint-rules/__tests__/rules.test.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test:a11y": "test-storybook",
+    "test:a11y:ci": "concurrently -k -s first -n SB,A11Y -c magenta,blue \"http-server storybook-static --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && npm run test:a11y\"",
+    "verify": "npm run tokens:check && npm run typecheck && npm run lint && npm run test:rules && npm run build-storybook && npm run test:a11y:ci"
+  },
+  "dependencies": {
+    "@radix-ui/react-checkbox": "^1.3.11",
+    "@radix-ui/react-slot": "^1.3.3",
+    "@radix-ui/react-toggle-group": "^1.1.19",
+    "@radix-ui/react-tooltip": "^1.2.16",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/react-vite": "^10.6.0",
+    "@storybook/test-runner": "^0.24.5",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/parser": "^8.69.0",
+    "axe-playwright": "^2.2.2",
+    "concurrently": "^10.0.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^17.12.0",
+    "http-server": "^14.1.1",
+    "storybook": "^10.6.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.69.0",
+    "vite": "^8.2.2",
+    "wait-on": "^9.1.0"
+  }
+}

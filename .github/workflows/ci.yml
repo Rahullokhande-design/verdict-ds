@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Six gates, in the order that fails cheapest first.
+#
+# The interesting one is the last. Everything above it reasons about source:
+# the token generator resolves the tier graph and measures the pairs it was
+# told about, TypeScript checks the types, the lint rules check the
+# architecture. Axe runs against rendered pixels in a real browser, which is
+# the only one of the six that can see what the cascade actually produced.
+#
+# That distinction is not academic. It is how a specificity bug that made every
+# button variant's colour inert got found, months after the tokens for those
+# variants were declared, measured and passed.
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # The committed tokens.css and contrast.json must match what tokens.ts
+      # generates. A hand-edited cascade is a cascade nothing is measuring.
+      - name: Tokens are current
+        run: npm run tokens:check
+
+      - name: Types
+        run: npm run typecheck
+
+      - name: Lint, including the three architecture rules
+        run: npm run lint
+
+      # A lint rule that has never fired is indistinguishable from one that
+      # does not work. These fixtures show each rule catching what it claims to.
+      - name: Lint rule fixtures
+        run: npm run test:rules
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Axe, every story, in a browser
+        run: npm run test:a11y:ci
