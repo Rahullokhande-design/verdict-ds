@@ -3,7 +3,7 @@
   "counts": {
     "primitives": 124,
     "semanticRoles": 73,
-    "componentTokens": 92,
+    "componentTokens": 94,
     "pairsMeasured": 72,
     "pairsGated": 70,
     "pairsAdvisory": 2

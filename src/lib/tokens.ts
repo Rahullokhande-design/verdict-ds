@@ -523,6 +523,23 @@ export const componentTokens: TokenMap = {
   "btn-outline-border": "{border-control}",
   "btn-outline-fg": "{text-primary}",
   "btn-disabled-fg": "{text-disabled}",
+  /**
+   * A disabled button loses its fill, it does not merely dim its label.
+   *
+   * This was missing, and for a long time nothing showed it: a specificity bug
+   * in the element reset was overriding every variant's colour, so a disabled
+   * accent button rendered in the ordinary body colour and looked plausible.
+   * Fixing the reset let `.vd-btn:disabled` win properly and put a disabled
+   * foreground on a full-strength violet fill, which reads as broken rather
+   * than as unavailable.
+   *
+   * WCAG exempts disabled controls from contrast, so no gate was ever going to
+   * catch this. It is a design defect, not a compliance one, which is worth
+   * saying: the checks find what they are shaped to find and somebody still has
+   * to look.
+   */
+  "btn-disabled-bg": "{surface-hover}",
+  "btn-disabled-border": "{border-subtle}",
 
   // Field
   "field-bg": "{surface-inset}",

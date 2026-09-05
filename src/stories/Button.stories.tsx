@@ -67,6 +67,21 @@ export const States: Story = {
       <State name="disabled" note="the undo window">
         <Button variant="accent" disabled>Commit change</Button>
       </State>
+      {/* Disabled has to be checked on every variant, not just one. A filled
+          button that dims only its label keeps a saturated background under an
+          unreadable word, which reads as broken rather than as unavailable.
+          Axe will never flag it: WCAG exempts disabled controls from contrast,
+          so this state needs an eye rather than a gate. */}
+      <State name="disabled, every variant" note="the fill goes too">
+        <Row>
+          <Button variant="quiet" disabled>Quiet</Button>
+          <Button variant="outline" disabled>Outline</Button>
+          <Button variant="accent" disabled>Accent</Button>
+          <Button variant="approve" disabled>Approve</Button>
+          <Button variant="decline" disabled>Decline</Button>
+          <Button variant="escalate" disabled>Escalate</Button>
+        </Row>
+      </State>
       <State name="with shortcut" note="paired Kbd">
         <Button variant="decline">
           Decline <Kbd>D</Kbd>

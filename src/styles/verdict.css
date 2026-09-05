@@ -967,7 +967,16 @@
     transform var(--vd-duration-fast) var(--vd-easing-standard);
 }
 
-.vd-btn:disabled { cursor: not-allowed; color: var(--vd-btn-disabled-fg); }
+/* Disabled wins over every variant, and takes the fill and the border with it,
+   so an unavailable control reads as unavailable rather than as a coloured
+   button whose label has gone missing. */
+.vd-btn:disabled {
+  cursor: not-allowed;
+  color: var(--vd-btn-disabled-fg);
+  background: var(--vd-btn-disabled-bg);
+  border-color: var(--vd-btn-disabled-border);
+  box-shadow: none;
+}
 .vd-btn:not(:disabled):active { transform: translateY(0.5px); }
 
 .vd-btn--sm { height: 28px; padding: 0 var(--vd-space-4); }

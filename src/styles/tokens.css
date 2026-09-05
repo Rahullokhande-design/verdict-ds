@@ -7,7 +7,7 @@
  * the portfolio's own can sit in one document without colliding. That scoping
  * is the reason a concept product can be embedded in a case study at all.
  *
- * 124 primitives · 73 semantic roles × 2 themes · 92 component tokens
+ * 124 primitives · 73 semantic roles × 2 themes · 94 component tokens
  * 72 contrast pairs measured, 0 below their gate.
  */
 
@@ -319,6 +319,8 @@
   --vd-btn-outline-border: var(--vd-border-control);
   --vd-btn-outline-fg: var(--vd-text-primary);
   --vd-btn-disabled-fg: var(--vd-text-disabled);
+  --vd-btn-disabled-bg: var(--vd-surface-hover);
+  --vd-btn-disabled-border: var(--vd-border-subtle);
   --vd-field-bg: var(--vd-surface-inset);
   --vd-field-border: var(--vd-border-control);
   --vd-field-border-focus: var(--vd-border-accent);
