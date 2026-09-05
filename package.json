@@ -2,7 +2,7 @@
   "name": "verdict-ds",
   "version": "1.0.0",
   "private": false,
-  "description": "A three-tier design token architecture and component library for a fraud-review console, with the constraints enforced at build rather than described in a README.",
+  "description": "A three-tier design token architecture and 20-component library for a fraud-review console, with the constraints enforced at build rather than described in a README.",
   "license": "MIT",
   "_comment": "Every config file here is explicitly .mjs or .ts, so this package is CommonJS by default. That is deliberate: Jest loads test-runner-jest.config.js through require, before any ESM loader exists, and \"type\": \"module\" makes that file unloadable. Dependency versions are filled in by the extractor from the versions actually installed in the source repository, so this file cannot drift from what the system was built and verified against.",
   "scripts": {

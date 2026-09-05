@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/REPO_OWNER/verdict-ds/actions/workflows/ci.yml/badge.svg)](https://github.com/REPO_OWNER/verdict-ds/actions/workflows/ci.yml)
 
-A three-tier design token architecture and component library for **Verdict**, a
+A three-tier design token architecture and 20-component library for **Verdict**, a
 concept card-fraud review console. A model scores flagged transactions and a
 human decides.
 
@@ -109,7 +109,7 @@ than trusting any one.
 src/lib/tokens.ts        the source of truth for every colour in the system
 src/lib/contrast.json    generated: every declared pair with its measured ratio
 src/styles/tokens.css    generated: the cascade, scoped to [data-verdict]
-src/components/          18 components, Radix behaviour, CVA variants
+src/components/          20 components, Radix behaviour, CVA variants
 src/stories/             28 stories, organised by state rather than by prop
 eslint-rules/            three custom rules, with fixtures
 scripts/build-tokens.mjs the generator and the contrast gate
