@@ -24,9 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 22, not 20. The lockfile is generated on a current Node and the
+      # toolchain (Storybook 10, tsx, the schema generator) is happier there.
+      # A CI badge that goes red on its first run because of a runtime skew is
+      # worse than no badge on a page arguing that its claims are checkable.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
