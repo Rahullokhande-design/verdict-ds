@@ -196,6 +196,13 @@ rewrites and nothing else. Every line of component source, every token and every
 story here is byte-identical to the line that ships. That is the only reason
 publishing it proves anything.
 
+Pushing to `main` deploys the Storybook. That is worth stating because it was not
+true for a while, and the failure was the quiet kind: the extraction replaces
+everything it does not explicitly preserve, `.vercel` was not on that list, so
+every run deleted the project link and the published Storybook silently sat days
+behind the repository it is generated from. A system that argues its
+documentation cannot drift from its source had shipped a copy that had.
+
 ## Scope, stated plainly
 
 A concept product, built as a portfolio case study. There is no data layer, no
