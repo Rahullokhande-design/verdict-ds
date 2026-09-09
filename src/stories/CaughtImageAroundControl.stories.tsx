@@ -27,7 +27,7 @@ export const AnImageAroundAButton: Story = {
       sawIt="The score instrument is a drawing, so it was given role=img and a label describing the score it shows. Inside it sits the threshold marker, which is a real control a reviewer can move. The markup read well and said something impossible."
       caughtBy="Axe. An image is a leaf node: everything inside it is a picture of a thing rather than the thing, so the control it contained was announced as nothing at all."
       missedBy="Review, three times. It reads as thoughtful accessibility work, which is exactly why it survived. The label was good. The role was wrong."
-      lives={{ label: "ScoreInstrument, every band", title: "Verdict/Instrument/ScoreInstrument", story: "Every band" }}
+      lives={{ label: "ScoreInstrument, every band", title: "Verdict/Instrument/ScoreInstrument", story: "EveryBand" }}
     >
       <div style={{ marginTop: 24, maxWidth: 720 }}>
         <Code>{`<div role="img" aria-label="Risk 82, band 4">

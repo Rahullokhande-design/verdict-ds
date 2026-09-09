@@ -31,7 +31,7 @@ export const OpacityBeatTheGate: Story = {
       sawIt="Rows in the queue rail dim once they have been decided, and dimming was done the obvious way, with opacity: 0.55 on the row. The colour underneath was a declared token that passes comfortably. The colour on screen was not that colour."
       caughtBy="Axe. It measures what a pixel ended up being, and a composited colour is what the pixel ended up being."
       missedBy="The contrast gate, and it could not have done anything else. A pair is declared and measured at build time. Opacity is applied by the browser, on the composite, long afterwards."
-      lives={{ label: "QueueRail, partly worked", title: "Verdict/Workspace/QueueRail", story: "Partly worked" }}
+      lives={{ label: "QueueRail, partly worked", title: "Verdict/Workspace/QueueRail", story: "PartlyWorked" }}
     >
       <Proof>
         <Swatch

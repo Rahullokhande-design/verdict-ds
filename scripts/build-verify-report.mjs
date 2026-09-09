@@ -135,7 +135,31 @@ const storyFiles = readdirSync(STORY_DIR)
   .filter((n) => n.endsWith(".stories.tsx"))
   .sort();
 
+const slug = (s) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+/**
+ * Storybook's story id, reproduced.
+ *
+ * Two details that are easy to get wrong and silent when you do. The suffix
+ * comes from the export name rather than the displayed `name`, and the export
+ * name is split into words before it is slugged, so `KeyboardWalk` becomes
+ * `keyboard-walk` rather than `keyboardwalk`.
+ */
+const storyId = (title, exportName) =>
+  slug(title.split("/").join("-")) +
+  "--" +
+  slug(
+    exportName
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+  );
+
 const byFile = {};
+const storyIds = [];
 let componentStates = 0;
 let docs = 0;
 
@@ -169,7 +193,25 @@ for (const name of storyFiles) {
   if (isDoc) docs += stories.length;
   else componentStates += stories.length;
 
-  byFile[name] = { title, section, kind: isDoc ? "documentation" : "state", stories: stories.length };
+  byFile[name] = {
+    title,
+    section,
+    kind: isDoc ? "documentation" : "state",
+    stories: stories.length,
+  };
+
+  /**
+   * The story ids, built the way Storybook builds them.
+   *
+   * Worth being precise about, because getting it wrong is silent: the id comes
+   * from the *export name*, not from the `name` a story displays. A page that
+   * links to "Verdict/Workspace/QueueRail" + "Partly worked" builds an id that
+   * does not exist, renders a link that looks fine, and lands the reader on
+   * nothing. `storyPath` in the stories reads this list and throws instead.
+   */
+  for (const exportName of stories) {
+    storyIds.push(storyId(title, exportName));
+  }
 }
 
 /* ── The sidebar order, checked against the sections that exist ───────────── */
@@ -307,6 +349,7 @@ const json =
       },
       stories: {
         total: componentStates + docs,
+        ids: [...storyIds].sort(),
         componentStates,
         documentation: docs,
         byFile,

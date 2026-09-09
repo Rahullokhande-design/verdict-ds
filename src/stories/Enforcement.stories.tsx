@@ -145,33 +145,40 @@ function Rule({
  * own page with the failure drawn beside the fix. The order is the order they
  * were found in, ending on the one nothing caught.
  */
-const CAUGHT: { name: string; line: string }[] = [
+const CAUGHT: { name: string; story: string; line: string }[] = [
   {
     name: "Inert button colour",
+    story: "InertButtonColour",
     line: "A form reset outscored every variant, so all six rendered in the inherited body colour. 4.42:1 against a 4.5 bar.",
   },
   {
     name: "Opacity beat the gate",
+    story: "OpacityBeatTheGate",
     line: "A decided row faded to 0.55, compositing a passing token down to 2.66:1. Opacity happens long after a pair is declared.",
   },
   {
     name: "A pair nobody declared",
+    story: "APairNobodyDeclared",
     line: "Tertiary text was measured on two surfaces and rendered on a third. A gate is silent about the pairing nobody wrote down.",
   },
   {
     name: "An image around a button",
+    story: "AnImageAroundAButton",
     line: 'role="img" wrapped around a focusable control. Reads well, and an image is a leaf node.',
   },
   {
     name: "A pointer to nothing",
+    story: "APointerToNothing",
     line: "aria-activedescendant naming a row that no longer existed. Visible only with an empty queue, which no screen renders.",
   },
   {
     name: "The one no gate caught",
+    story: "TheOneNoGateCaught",
     line: "A disabled button that dimmed its label and kept its fill. WCAG exempts disabled controls, so axe passed it. It needed an eye.",
   },
   {
     name: "This page's own mistake",
+    story: "ThisPagesOwnMistake",
     line: "The red label on a failing example above, written with a fill token instead of a foreground one. 3.77:1, on this page, on its first run.",
   },
 ];
@@ -272,7 +279,7 @@ export const WhatIsChecked: Story = {
             </span>
             <div>
               <a
-                href={storyPath(`Verdict/What the checks caught/${c.name}`, c.name)}
+                href={storyPath(`Verdict/What the checks caught/${c.name}`, c.story)}
                 target="_top"
                 style={{ color: "var(--vd-text-accent)", fontSize: 15 }}
               >

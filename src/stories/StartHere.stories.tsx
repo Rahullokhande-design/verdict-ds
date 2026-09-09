@@ -145,21 +145,21 @@ export const Overview: Story = {
           n="01"
           claim="Every constraint is enforced, not written down."
           proof={`${verify.gates.length} gates run on every commit, including three custom lint rules that encode this system's own architecture and ${verify.fixtures.total} fixtures proving those rules actually fire.`}
-          href={storyPath("Verdict/Enforcement/What is checked", "What is checked")}
+          href={storyPath("Verdict/Enforcement/What is checked", "WhatIsChecked")}
           cta="What is checked"
         />
         <Claim
           n="02"
           claim="The checks caught seven real defects. One of them they missed."
           proof="Every case here is a defect that shipped, with the failure beside the fix. In every one, the check that found it was not the check you would have expected, and the seventh was committed by the person documenting the rule it broke."
-          href={storyPath("Verdict/What the checks caught/Inert button colour", "Inert button colour")}
+          href={storyPath("Verdict/What the checks caught/Inert button colour", "InertButtonColour")}
           cta="What the checks caught"
         />
         <Claim
           n="03"
           claim="Colour is measured, not asserted."
           proof={`Three tiers, ${contrast.counts.semanticRoles} semantic roles in both themes, and every declared pair scored against WCAG 2.2 on every build. Currently ${belowGate === 0 ? "none" : belowGate} below its floor.`}
-          href={storyPath("Verdict/Foundations/Measured contrast", "Measured contrast")}
+          href={storyPath("Verdict/Foundations/Measured contrast", "MeasuredContrast")}
           cta="The measured contrast table"
         />
       </ol>

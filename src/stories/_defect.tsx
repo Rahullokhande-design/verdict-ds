@@ -1,5 +1,6 @@
 import * as React from "react";
 import contrast from "@/lib/contrast.json";
+import verify from "@/lib/verify.json";
 
 /**
  * The frame for "What the checks caught".
@@ -102,16 +103,43 @@ export function declared(
 const mono = "var(--vd-fontFamily-mono)";
 
 /**
- * A Storybook story id, built the way Storybook builds it, so a link to another
- * page is not a string somebody has to keep in step by hand.
+ * A link to another story, checked rather than hoped for.
+ *
+ * `exportName` is the exported const, not the name a story displays. That
+ * distinction is the whole reason this function validates: Storybook builds the
+ * id from the export, splitting it into words first, so
+ * `storyPath("…/QueueRail", "Partly worked")` produces an id that does not exist
+ * and renders a link that looks perfectly fine and goes nowhere. Passing a
+ * display name with an apostrophe in it produced exactly that here.
+ *
+ * verify.json carries every real story id, generated from the same source
+ * Storybook indexes, so an unresolvable link throws while the page renders. Axe
+ * renders every page in CI, which makes a broken cross-link a failed build
+ * rather than a dead end somebody finds later.
  */
-export function storyPath(title: string, story: string): string {
+export function storyPath(title: string, exportName: string): string {
   const slug = (s: string) =>
     s
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
-  return `./?path=/story/${slug(title.split("/").join("-"))}--${slug(story)}`;
+
+  const id =
+    slug(title.split("/").join("-")) +
+    "--" +
+    slug(
+      exportName
+        .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+        .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+    );
+
+  if (!(verify.stories.ids as string[]).includes(id)) {
+    throw new Error(
+      `No story "${id}". storyPath takes the export name, not the displayed name: ` +
+        `storyPath("${title}", "PartlyWorked") rather than "Partly worked".`
+    );
+  }
+  return `./?path=/story/${id}`;
 }
 
 function Label({ children }: { children: React.ReactNode }) {

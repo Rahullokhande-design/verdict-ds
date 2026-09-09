@@ -34,7 +34,7 @@ export const ThisPagesOwnMistake: Story = {
       sawIt='The examples on the Enforcement page are labelled "fails" in red and "passes" in green. The red was written with --vd-decision-decline-solid. That is a fill colour, and it was used as text on a dark surface.'
       caughtBy="Axe, the first time the page rendered. Nothing about it looked wrong: it is a red word, on a dark background, in a system whose red is that red."
       missedBy="The person writing the page, who was at that moment explaining why the tier split exists. The system already had the right token. The wrong one was simply the more obvious name."
-      lives={{ label: "Enforcement, what is checked", title: "Verdict/Enforcement/What is checked", story: "What is checked" }}
+      lives={{ label: "Enforcement, what is checked", title: "Verdict/Enforcement/What is checked", story: "WhatIsChecked" }}
     >
       <Proof>
         <Swatch
