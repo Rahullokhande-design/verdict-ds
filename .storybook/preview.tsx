@@ -1,74 +1,93 @@
-import * as React from "react";
 import type { Decorator, Preview } from "@storybook/react-vite";
 
 import "../src/styles/tokens.css";
 import "../src/styles/verdict.css";
 
-import { TooltipProvider } from "../src/components/primitives";
+import { VerdictCanvas, globalTypes, parameters } from "../src/lib/storybook";
 
 /**
- * Every token in the system hangs off `[data-verdict]`, and every role that
- * differs between themes hangs off `[data-vd-theme]`. Stories therefore render
- * inside both attributes rather than on a bare canvas.
+ * The Vite half of the preview.
  *
- * The theme is a toolbar global, not a story arg, which is deliberate: the
- * point of the semantic tier is that a component does not know which theme it
- * is in. Making theme a prop on a story would let a component start caring.
+ * Everything that is not framework-specific lives in src/lib/storybook.tsx,
+ * which is copied byte for byte from the repository this system is used in.
+ * What is left here is the part that is genuinely different between the two: the
+ * type import, where the stylesheets sit, and how the fonts arrive, which for
+ * this build is the link tag in preview-head.html rather than next/font.
  */
-const withVerdict: Decorator = (Story, context) => {
-  const theme = context.globals.theme ?? "dark";
-  return (
-    <div
-      data-verdict
-      data-vd-theme={theme}
-      style={{
-        background: "var(--vd-surface-base)",
-        color: "var(--vd-text-primary)",
-        padding: "var(--vd-space-6)",
-        minHeight: "100%",
-        fontFamily: "var(--vd-fontFamily-sans)",
-      }}
-    >
-      <TooltipProvider delayDuration={250}>
-        <Story />
-      </TooltipProvider>
-    </div>
-  );
-};
+const withVerdict: Decorator = (Story, context) => (
+  <VerdictCanvas theme={context.globals.theme ?? "dark"}>
+    <Story />
+  </VerdictCanvas>
+);
 
 const preview: Preview = {
   decorators: [withVerdict],
-  globalTypes: {
-    theme: {
-      description: "Verdict theme",
-      defaultValue: "dark",
-      toolbar: {
-        title: "Theme",
-        icon: "circlehollow",
-        items: [
-          { value: "dark", title: "Dark" },
-          { value: "light", title: "Light" },
+  /**
+   * Autodocs on everything.
+   *
+   * Nine story files set `component:` and nothing consumed it, so the Storybook
+   * had no documentation page, no prop table and no import line anywhere in it.
+   * Tagging globally means a component cannot be added without one.
+   */
+  tags: ["autodocs"],
+  globalTypes,
+  parameters: {
+    ...parameters,
+    /**
+     * The sidebar order, spelled out inline because it has to be.
+     *
+     * Storybook does not evaluate this file to find the order. It parses it,
+     * statically, with Babel, looking for a literal
+     * `parameters.options.storySort` in the source of preview.tsx. An imported
+     * value throws "Unexpected identifier", a member expression throws "Unknown
+     * node type", and an order it cannot find at all is ignored in silence,
+     * leaving the sidebar in file order with no error anywhere. Which is how
+     * this Storybook came to be numbered "0 Enforcement", "1 Primitives" and to
+     * render them 1, 2, 4, 0, 3, 5.
+     *
+     * So it is written out here, and again in the other preview.tsx, and
+     * `report:check` compares the two and fails when they drift. A duplication
+     * that has to exist is fine. A duplication nothing is watching is not.
+     */
+    options: {
+      storySort: {
+        order: [
+          "Verdict",
+          [
+            "Start here",
+            ["Overview"],
+            "Enforcement",
+            ["What is checked"],
+            "What the checks caught",
+            [
+              // Found in this order, ending on the one nothing automatic caught,
+              // then on the one committed by the person documenting the rule it
+              // broke.
+              "Inert button colour",
+              "Opacity beat the gate",
+              "A pair nobody declared",
+              "An image around a button",
+              "A pointer to nothing",
+              "The one no gate caught",
+              "This page's own mistake",
+            ],
+            "Foundations",
+            ["Three tiers", "Colour roles", "Measured contrast"],
+            // The component tiers, in the order the architecture builds them up.
+            "Primitives",
+            ["Button", "Kbd", "Panel", "Tooltip", "SrOnly"],
+            "Compounds",
+            ["Checkbox", "Segmented", "FilterPill", "SortHeader"],
+            "Domain",
+            ["RiskBadge", "VerdictStamp", "EntityChip", "EventTimeline"],
+            "Instrument",
+            ["ScoreInstrument", "SignalList"],
+            "Workspace",
+            ["CaseFacts", "QueueRail", "DecisionBar", "UndoToast", "ThresholdChart"],
+          ],
         ],
-        dynamicTitle: true,
       },
     },
-  },
-  parameters: {
-    layout: "fullscreen",
-    controls: { expanded: true },
-    a11y: {
-      /**
-       * Fail the story, do not annotate it.
-       *
-       * The addon draws its findings in a panel while you author, and a panel
-       * is a suggestion. "error" is what makes `npm run test:a11y` run axe over
-       * every story in a real browser and exit non-zero on any violation, which
-       * is the only version of an accessibility standard that survives a
-       * deadline.
-       */
-      test: "error",
-    },
-    backgrounds: { disable: true },
   },
 };
 

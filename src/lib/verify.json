@@ -1,0 +1,343 @@
+{
+  "generated": "by scripts/build-verify-report.mjs. Do not edit.",
+  "gates": [
+    {
+      "script": "report:check",
+      "label": "The published numbers are current",
+      "proves": "The gate list, the fixture count and the story count shown in the Storybook match what this repository actually contains."
+    },
+    {
+      "script": "tokens:check",
+      "label": "Tokens are current",
+      "proves": "The committed cascade matches what the source generates, the three tiers resolve without a component ever reaching a primitive, every semantic role exists in both themes, and every declared colour pair meets its WCAG minimum."
+    },
+    {
+      "script": "contract:check",
+      "label": "The data contract is current",
+      "proves": "The published JSON Schema matches the types the components are written against, and every fixture the interface renders validates against it. A contract nothing is checked against is a document."
+    },
+    {
+      "script": "typecheck",
+      "label": "Types",
+      "proves": "tsc --noEmit."
+    },
+    {
+      "script": "lint",
+      "label": "Lint",
+      "proves": "typescript-eslint and jsx-a11y, plus three custom rules that encode this system's architecture, all as errors. A rule that warns is a rule that is off."
+    },
+    {
+      "script": "test:rules",
+      "label": "Rule fixtures",
+      "proves": "Each custom rule is shown catching what it claims and permitting what it is allowed to. This system's own source passes all three cleanly, so a green lint would otherwise prove nothing about whether the rules work."
+    },
+    {
+      "script": "build-storybook",
+      "label": "Storybook builds",
+      "proves": "It builds."
+    },
+    {
+      "script": "test:a11y:ci",
+      "label": "Axe, every story, in a real browser",
+      "proves": "Not the panel, which is a suggestion. The run exits non-zero on any violation."
+    }
+  ],
+  "fixtures": {
+    "total": 23,
+    "byRule": {
+      "verdict/no-raw-hex": 6,
+      "verdict/no-primitive-token-in-component": 6,
+      "verdict/no-handler-on-non-interactive": 11
+    }
+  },
+  "sidebar": {
+    "order": [
+      "Verdict",
+      [
+        "Start here",
+        [
+          "Overview"
+        ],
+        "Enforcement",
+        [
+          "What is checked"
+        ],
+        "What the checks caught",
+        [
+          "Inert button colour",
+          "Opacity beat the gate",
+          "A pair nobody declared",
+          "An image around a button",
+          "A pointer to nothing",
+          "The one no gate caught",
+          "This page's own mistake"
+        ],
+        "Foundations",
+        [
+          "Three tiers",
+          "Colour roles",
+          "Measured contrast"
+        ],
+        "Primitives",
+        [
+          "Button",
+          "Kbd",
+          "Panel",
+          "Tooltip",
+          "SrOnly"
+        ],
+        "Compounds",
+        [
+          "Checkbox",
+          "Segmented",
+          "FilterPill",
+          "SortHeader"
+        ],
+        "Domain",
+        [
+          "RiskBadge",
+          "VerdictStamp",
+          "EntityChip",
+          "EventTimeline"
+        ],
+        "Instrument",
+        [
+          "ScoreInstrument",
+          "SignalList"
+        ],
+        "Workspace",
+        [
+          "CaseFacts",
+          "QueueRail",
+          "DecisionBar",
+          "UndoToast",
+          "ThresholdChart"
+        ]
+      ]
+    ]
+  },
+  "components": {
+    "total": 20,
+    "names": [
+      "Button",
+      "CaseFacts",
+      "Checkbox",
+      "DecisionBar",
+      "EntityChip",
+      "EventTimeline",
+      "FilterPill",
+      "Kbd",
+      "Panel",
+      "QueueRail",
+      "RiskBadge",
+      "ScoreInstrument",
+      "Segmented",
+      "SignalList",
+      "SortHeader",
+      "SrOnly",
+      "ThresholdChart",
+      "Tooltip",
+      "UndoToast",
+      "VerdictStamp"
+    ]
+  },
+  "stories": {
+    "total": 54,
+    "componentStates": 42,
+    "documentation": 12,
+    "byFile": {
+      "Button.stories.tsx": {
+        "title": "Verdict/Primitives/Button",
+        "section": "Primitives",
+        "kind": "state",
+        "stories": 3
+      },
+      "CaseFacts.stories.tsx": {
+        "title": "Verdict/Workspace/CaseFacts",
+        "section": "Workspace",
+        "kind": "state",
+        "stories": 2
+      },
+      "CaughtDisabledFill.stories.tsx": {
+        "title": "Verdict/What the checks caught/The one no gate caught",
+        "section": "What the checks caught",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "CaughtImageAroundControl.stories.tsx": {
+        "title": "Verdict/What the checks caught/An image around a button",
+        "section": "What the checks caught",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "CaughtInertButton.stories.tsx": {
+        "title": "Verdict/What the checks caught/Inert button colour",
+        "section": "What the checks caught",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "CaughtOpacity.stories.tsx": {
+        "title": "Verdict/What the checks caught/Opacity beat the gate",
+        "section": "What the checks caught",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "CaughtOwnMistake.stories.tsx": {
+        "title": "Verdict/What the checks caught/This page's own mistake",
+        "section": "What the checks caught",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "CaughtPointerToNothing.stories.tsx": {
+        "title": "Verdict/What the checks caught/A pointer to nothing",
+        "section": "What the checks caught",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "CaughtUndeclaredPair.stories.tsx": {
+        "title": "Verdict/What the checks caught/A pair nobody declared",
+        "section": "What the checks caught",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "Checkbox.stories.tsx": {
+        "title": "Verdict/Compounds/Checkbox",
+        "section": "Compounds",
+        "kind": "state",
+        "stories": 2
+      },
+      "DecisionBar.stories.tsx": {
+        "title": "Verdict/Workspace/DecisionBar",
+        "section": "Workspace",
+        "kind": "state",
+        "stories": 4
+      },
+      "Enforcement.stories.tsx": {
+        "title": "Verdict/Enforcement/What is checked",
+        "section": "Enforcement",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "EntityChip.stories.tsx": {
+        "title": "Verdict/Domain/EntityChip",
+        "section": "Domain",
+        "kind": "state",
+        "stories": 2
+      },
+      "EventTimeline.stories.tsx": {
+        "title": "Verdict/Domain/EventTimeline",
+        "section": "Domain",
+        "kind": "state",
+        "stories": 2
+      },
+      "FilterPill.stories.tsx": {
+        "title": "Verdict/Compounds/FilterPill",
+        "section": "Compounds",
+        "kind": "state",
+        "stories": 1
+      },
+      "FoundationsColour.stories.tsx": {
+        "title": "Verdict/Foundations/Colour roles",
+        "section": "Foundations",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "FoundationsContrast.stories.tsx": {
+        "title": "Verdict/Foundations/Measured contrast",
+        "section": "Foundations",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "FoundationsTiers.stories.tsx": {
+        "title": "Verdict/Foundations/Three tiers",
+        "section": "Foundations",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "Kbd.stories.tsx": {
+        "title": "Verdict/Primitives/Kbd",
+        "section": "Primitives",
+        "kind": "state",
+        "stories": 1
+      },
+      "Panel.stories.tsx": {
+        "title": "Verdict/Primitives/Panel",
+        "section": "Primitives",
+        "kind": "state",
+        "stories": 1
+      },
+      "QueueRail.stories.tsx": {
+        "title": "Verdict/Workspace/QueueRail",
+        "section": "Workspace",
+        "kind": "state",
+        "stories": 5
+      },
+      "RiskBadge.stories.tsx": {
+        "title": "Verdict/Domain/RiskBadge",
+        "section": "Domain",
+        "kind": "state",
+        "stories": 3
+      },
+      "ScoreInstrument.stories.tsx": {
+        "title": "Verdict/Instrument/ScoreInstrument",
+        "section": "Instrument",
+        "kind": "state",
+        "stories": 4
+      },
+      "Segmented.stories.tsx": {
+        "title": "Verdict/Compounds/Segmented",
+        "section": "Compounds",
+        "kind": "state",
+        "stories": 1
+      },
+      "SignalList.stories.tsx": {
+        "title": "Verdict/Instrument/SignalList",
+        "section": "Instrument",
+        "kind": "state",
+        "stories": 2
+      },
+      "SortHeader.stories.tsx": {
+        "title": "Verdict/Compounds/SortHeader",
+        "section": "Compounds",
+        "kind": "state",
+        "stories": 1
+      },
+      "SrOnly.stories.tsx": {
+        "title": "Verdict/Primitives/SrOnly",
+        "section": "Primitives",
+        "kind": "state",
+        "stories": 1
+      },
+      "StartHere.stories.tsx": {
+        "title": "Verdict/Start here/Overview",
+        "section": "Start here",
+        "kind": "documentation",
+        "stories": 1
+      },
+      "ThresholdChart.stories.tsx": {
+        "title": "Verdict/Workspace/ThresholdChart",
+        "section": "Workspace",
+        "kind": "state",
+        "stories": 2
+      },
+      "Tooltip.stories.tsx": {
+        "title": "Verdict/Primitives/Tooltip",
+        "section": "Primitives",
+        "kind": "state",
+        "stories": 1
+      },
+      "UndoToast.stories.tsx": {
+        "title": "Verdict/Workspace/UndoToast",
+        "section": "Workspace",
+        "kind": "state",
+        "stories": 2
+      },
+      "VerdictStamp.stories.tsx": {
+        "title": "Verdict/Domain/VerdictStamp",
+        "section": "Domain",
+        "kind": "state",
+        "stories": 2
+      }
+    }
+  }
+}

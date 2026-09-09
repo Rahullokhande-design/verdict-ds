@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import contrast from "@/lib/contrast.json";
+import verify from "@/lib/verify.json";
+import { storyPath } from "./_defect";
 
 /**
  * The argument, in the one place a stranger will actually look.
@@ -8,13 +10,26 @@ import contrast from "@/lib/contrast.json";
  * A design system's constraints normally live in a README nobody opens and a CI
  * config nobody has access to. Someone evaluating this in ten minutes will open
  * a Storybook URL and click around. So the rules are documented here, beside the
- * components they govern, with the numbers read from the same generated report
- * the build gate reads.
+ * components they govern.
+ *
+ * Every number on this page is now read from a generated file. That was not
+ * true when the page was written. It said six gates while verify ran seven, and
+ * twenty-one rule fixtures while the test file held twenty-three, both typed by
+ * hand on the page whose whole argument is that an unchecked claim decays. See
+ * scripts/build-verify-report.mjs.
  */
 const meta = {
-  title: "Verdict/0 Enforcement/What is checked",
+  title: "Verdict/Enforcement/What is checked",
+  tags: ["!autodocs"],
   parameters: {
     layout: "fullscreen",
+    /**
+     * No addon panel on a documentation page. It has no args and no
+     * interactions, so the panel renders Storybook telling the reader "This
+     * story has no controls", which was the first sentence of prose this
+     * Storybook offered about itself.
+     */
+    options: { showPanel: false },
     a11y: { test: "error" },
   },
 } satisfies Meta;
@@ -22,9 +37,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const belowGate = contrast.measurements.filter(
-  (m) => !m.passes && !m.advisory
-).length;
+const belowGate = contrast.measurements.filter((m) => !m.passes && !m.advisory).length;
 
 const mono = "var(--vd-fontFamily-mono)";
 
@@ -66,7 +79,8 @@ function Code({ ok, children }: { ok?: boolean; children: React.ReactNode }) {
            that distinction is the whole point of having both tokens: -solid is
            a background, -fg is a foreground, and reaching for the solid because
            it is the more obvious name puts a fill colour on a dark surface at
-           3.76:1. Axe caught exactly that here. */
+           3.77:1. Axe caught exactly that here, and it is the seventh defect
+           on the list at the bottom of this page. */
       }}
     >
       <span
@@ -123,51 +137,92 @@ function Rule({
   );
 }
 
+/**
+ * The seven, as links.
+ *
+ * They used to be seven paragraphs at the bottom of this page, which is where
+ * the most persuasive evidence in the system went to be skipped. Each is now its
+ * own page with the failure drawn beside the fix. The order is the order they
+ * were found in, ending on the one nothing caught.
+ */
+const CAUGHT: { name: string; line: string }[] = [
+  {
+    name: "Inert button colour",
+    line: "A form reset outscored every variant, so all six rendered in the inherited body colour. 4.42:1 against a 4.5 bar.",
+  },
+  {
+    name: "Opacity beat the gate",
+    line: "A decided row faded to 0.55, compositing a passing token down to 2.66:1. Opacity happens long after a pair is declared.",
+  },
+  {
+    name: "A pair nobody declared",
+    line: "Tertiary text was measured on two surfaces and rendered on a third. A gate is silent about the pairing nobody wrote down.",
+  },
+  {
+    name: "An image around a button",
+    line: 'role="img" wrapped around a focusable control. Reads well, and an image is a leaf node.',
+  },
+  {
+    name: "A pointer to nothing",
+    line: "aria-activedescendant naming a row that no longer existed. Visible only with an empty queue, which no screen renders.",
+  },
+  {
+    name: "The one no gate caught",
+    line: "A disabled button that dimmed its label and kept its fill. WCAG exempts disabled controls, so axe passed it. It needed an eye.",
+  },
+  {
+    name: "This page's own mistake",
+    line: "The red label on a failing example above, written with a fill token instead of a foreground one. 3.77:1, on this page, on its first run.",
+  },
+];
+
 export const WhatIsChecked: Story = {
   name: "What is checked",
   render: () => (
-    <div style={{ maxWidth: 820, lineHeight: 1.65 }}>
+    <div style={{ maxWidth: 860, lineHeight: 1.65 }}>
       <h1 style={{ fontSize: 26, margin: 0, letterSpacing: "-0.01em" }}>
         Every claim here is checked by something
       </h1>
-      <p style={{ margin: "12px 0 0", maxWidth: "62ch", color: "var(--vd-text-secondary)" }}>
+      <p style={{ margin: "12px 0 0", maxWidth: "64ch", color: "var(--vd-text-secondary)" }}>
         A design system is a set of promises about what will not happen. Written
         in a README those promises decay, because nothing is watching. These ones
         fail a build. You do not have to take any of it on trust: clone the repo
         and run <code style={{ fontFamily: mono }}>npm run verify</code>.
       </p>
 
-      <H>Six gates</H>
-      <ol style={{ margin: 0, paddingLeft: 20, maxWidth: "64ch" }}>
-        <li>
-          <strong>Tokens are current.</strong> The committed cascade matches what
-          the source generates, the three tiers resolve without a component ever
-          reaching a primitive, every semantic role exists in both themes, and
-          all {contrast.counts.pairsMeasured} declared colour pairs meet their
-          WCAG minimum. Currently {belowGate === 0 ? "none" : belowGate} below
-          gate.
-        </li>
-        <li>
-          <strong>Types.</strong> <code style={{ fontFamily: mono }}>tsc --noEmit</code>.
-        </li>
-        <li>
-          <strong>Lint.</strong> typescript-eslint and jsx-a11y, plus the three
-          custom rules below, all as errors. A rule that warns is a rule that is
-          off.
-        </li>
-        <li>
-          <strong>Rule fixtures.</strong> Twenty-one cases showing each custom
-          rule catching what it claims and permitting what it is allowed to. This
-          system&rsquo;s own source passes all three cleanly, so a green lint would
-          otherwise prove nothing about whether the rules work.
-        </li>
-        <li>
-          <strong>Storybook builds.</strong>
-        </li>
-        <li>
-          <strong>Axe, every story, in a real browser.</strong> Not the panel,
-          which is a suggestion. The run exits non-zero on any violation.
-        </li>
+      <H>
+        {verify.gates.length} gates, cheapest failure first
+      </H>
+      <ol style={{ margin: 0, paddingLeft: 20, maxWidth: "66ch" }}>
+        {verify.gates.map((gate) => (
+          <li key={gate.script} style={{ marginBottom: 10 }}>
+            <strong>{gate.label}.</strong>{" "}
+            <code style={{ fontFamily: mono, fontSize: 12.5, color: "var(--vd-text-tertiary)" }}>
+              {gate.script}
+            </code>
+            <br />
+            <span style={{ color: "var(--vd-text-secondary)" }}>{gate.proves}</span>
+            {gate.script === "tokens:check" ? (
+              <span style={{ color: "var(--vd-text-secondary)" }}>
+                {" "}
+                All {contrast.counts.pairsMeasured} declared pairs, currently{" "}
+                {belowGate === 0 ? "none" : belowGate} below gate.
+              </span>
+            ) : null}
+            {gate.script === "test:rules" ? (
+              <span style={{ color: "var(--vd-text-secondary)" }}>
+                {" "}
+                {verify.fixtures.total} fixtures across the three rules.
+              </span>
+            ) : null}
+            {gate.script === "test:a11y:ci" ? (
+              <span style={{ color: "var(--vd-text-secondary)" }}>
+                {" "}
+                All {verify.stories.total} stories, none exempted.
+              </span>
+            ) : null}
+          </li>
+        ))}
       </ol>
 
       <H>Three rules this system wrote for itself</H>
@@ -194,61 +249,41 @@ export const WhatIsChecked: Story = {
       />
 
       <H>What the checks actually caught</H>
-      <p style={{ margin: "0 0 10px", maxWidth: "64ch", color: "var(--vd-text-secondary)" }}>
-        Not a hypothetical list. Seven live defects, and in every case the check
-        that found one was not the check you would have expected.
+      <p style={{ margin: "0 0 4px", maxWidth: "66ch", color: "var(--vd-text-secondary)" }}>
+        Seven live defects, not a hypothetical list. In every case the check that
+        found one was not the check you would have expected, and the sixth was
+        not found by a check at all. Each has its own page, with the failure
+        beside the fix.
       </p>
-      <ol style={{ margin: 0, paddingLeft: 20, maxWidth: "64ch" }}>
-        <li>
-          <strong>Every button variant&rsquo;s colour was inert.</strong> A form reset
-          written <code style={{ fontFamily: mono }}>[data-verdict] button</code>{" "}
-          scores (0,1,1) and beat every single-class variant, so all six rendered
-          in the inherited body colour. The token gate could not see it: the
-          pairs the tokens declared were correct. Axe measured the rendered
-          pixels and put the accent button at 4.42:1 against a 4.5 bar.
-        </li>
-        <li>
-          <strong>Opacity defeating the contrast gate.</strong> A decided row
-          faded to 0.55 composited a passing colour down to 2.66:1. Opacity is
-          applied long after a pair is declared.
-        </li>
-        <li>
-          <strong>A colour never measured on the surface it sat on.</strong>{" "}
-          Light-theme tertiary text passed on panels and on the app background,
-          and sat at 4.38:1 on the sunken surface the queue rail uses. That pair
-          had simply never been declared.
-        </li>
-        <li>
-          <strong>role=&quot;img&quot; wrapped around a focusable control.</strong>{" "}
-          Reads well, and is invalid: an image is a leaf node.
-        </li>
-        <li>
-          <strong>aria-activedescendant pointing at nothing.</strong> Visible
-          only with an empty queue, which happens at the end of every shift and
-          which no screen renders.
-        </li>
-        <li>
-          <strong>A disabled button that dimmed its label but kept a saturated
-          fill.</strong>{" "}
-          Exposed by fixing the first one.{" "}
-          <em>
-            No gate caught this. WCAG exempts disabled controls from contrast, so
-            axe passed it cleanly. It needed an eye.
-          </em>{" "}
-          Which is the honest end of the argument: the checks find what they are
-          shaped to find, and somebody still has to look.
-        </li>
-        <li>
-          <strong>This page, on its first run.</strong> The red label on a failing
-          example above was written with{" "}
-          <code style={{ fontFamily: mono }}>--vd-decision-decline-solid</code>,
-          a fill colour, used as text: 3.76:1 on a dark surface. The system
-          already had the right token,{" "}
-          <code style={{ fontFamily: mono }}>-fg</code> rather than{" "}
-          <code style={{ fontFamily: mono }}>-solid</code>, and the wrong one was
-          simply the more obvious name. Which is the mistake that split exists to
-          make catchable, committed by the person documenting the split.
-        </li>
+      <ol style={{ margin: "16px 0 0", padding: 0, listStyle: "none" }}>
+        {CAUGHT.map((c, i) => (
+          <li
+            key={c.name}
+            style={{
+              padding: "14px 0",
+              borderTop: "1px solid var(--vd-border-subtle)",
+              display: "grid",
+              gridTemplateColumns: "28px 1fr",
+              gap: 14,
+            }}
+          >
+            <span style={{ fontFamily: mono, fontSize: 12, color: "var(--vd-text-tertiary)" }}>
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <a
+                href={storyPath(`Verdict/What the checks caught/${c.name}`, c.name)}
+                target="_top"
+                style={{ color: "var(--vd-text-accent)", fontSize: 15 }}
+              >
+                {c.name}
+              </a>
+              <p style={{ margin: "4px 0 0", color: "var(--vd-text-secondary)", maxWidth: "64ch" }}>
+                {c.line}
+              </p>
+            </div>
+          </li>
+        ))}
       </ol>
 
       <p
@@ -258,12 +293,14 @@ export const WhatIsChecked: Story = {
           borderTop: "1px solid var(--vd-border-subtle)",
           fontSize: 13,
           color: "var(--vd-text-tertiary)",
-          maxWidth: "64ch",
+          maxWidth: "66ch",
         }}
       >
-        Numbers on this page are read from the generated contrast report, the
-        same file the build gate reads. If they are wrong here, the build is
-        wrong too.
+        Every number on this page, including the count of checks and the count of
+        stories they run against, is read from a file the build generates. If any
+        of them is wrong here, the build is wrong too. That sentence used to be
+        two thirds true, which is how this page came to claim six gates while
+        seven were running.
       </p>
     </div>
   ),

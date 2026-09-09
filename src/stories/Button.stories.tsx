@@ -11,7 +11,7 @@ import { Matrix, Row, State, Stack } from "./_harness";
  * it never asked for, and the primitive has quietly become a domain component.
  */
 const meta = {
-  title: "Verdict/1 Primitives/Button",
+  title: "Verdict/Primitives/Button",
   component: Button,
   args: { children: "Escalate" },
   argTypes: {

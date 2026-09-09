@@ -3,7 +3,7 @@ import { Button, Tooltip } from "@/components/primitives";
 import { Row, State, Stack } from "./_harness";
 
 const meta = {
-  title: "Verdict/1 Primitives/Tooltip",
+  title: "Verdict/Primitives/Tooltip",
   component: Tooltip,
   args: { content: "Opens on focus, not only on hover", children: null },
 } satisfies Meta<typeof Tooltip>;

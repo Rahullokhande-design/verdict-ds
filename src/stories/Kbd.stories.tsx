@@ -3,7 +3,7 @@ import { Kbd } from "@/components/primitives";
 import { Row, State, Stack } from "./_harness";
 
 const meta = {
-  title: "Verdict/1 Primitives/Kbd",
+  title: "Verdict/Primitives/Kbd",
   component: Kbd,
   args: { children: "D" },
 } satisfies Meta<typeof Kbd>;

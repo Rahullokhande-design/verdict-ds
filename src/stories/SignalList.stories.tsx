@@ -14,7 +14,7 @@ import { Stack, State } from "./_harness";
 const real = cases[0].signals;
 
 const meta = {
-  title: "Verdict/3 Instrument/SignalList",
+  title: "Verdict/Instrument/SignalList",
   component: SignalList,
   args: { signals: real },
   parameters: { layout: "padded" },

@@ -8,6 +8,8 @@
   "scripts": {
     "tokens:build": "node scripts/build-tokens.mjs",
     "tokens:check": "node scripts/build-tokens.mjs --check",
+    "report:build": "node scripts/build-verify-report.mjs",
+    "report:check": "node scripts/build-verify-report.mjs --check",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test:rules": "node eslint-rules/__tests__/rules.test.mjs",
@@ -15,7 +17,7 @@
     "build-storybook": "storybook build",
     "test:a11y": "test-storybook",
     "test:a11y:ci": "concurrently -k -s first -n SB,A11Y -c magenta,blue \"http-server storybook-static --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && npm run test:a11y\"",
-    "verify": "npm run tokens:check && npm run contract:check && npm run typecheck && npm run lint && npm run test:rules && npm run build-storybook && npm run test:a11y:ci",
+    "verify": "npm run report:check && npm run tokens:check && npm run contract:check && npm run typecheck && npm run lint && npm run test:rules && npm run build-storybook && npm run test:a11y:ci",
     "contract:build": "node scripts/build-contract.mjs",
     "contract:check": "node scripts/build-contract.mjs --check && tsx scripts/check-contract.mjs"
   },
@@ -33,6 +35,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
     "@storybook/react-vite": "^10.6.0",
     "@storybook/test-runner": "^0.24.5",
     "@types/react": "^18.3.28",

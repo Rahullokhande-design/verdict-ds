@@ -13,7 +13,7 @@ import { Matrix, Stack, State } from "./_harness";
  * all.
  */
 const meta = {
-  title: "Verdict/3 Instrument/ScoreInstrument",
+  title: "Verdict/Instrument/ScoreInstrument",
   component: ScoreInstrument,
   args: { score: 78, confidence: [71, 84], band: 3, threshold: 68, thresholdSetBy: "R. Mehta" },
   argTypes: {

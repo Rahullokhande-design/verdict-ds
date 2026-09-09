@@ -6,17 +6,21 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Six gates, in the order that fails cheapest first.
+# Eight gates, in the order that fails cheapest first.
 #
 # The interesting one is the last. Everything above it reasons about source:
 # the token generator resolves the tier graph and measures the pairs it was
 # told about, TypeScript checks the types, the lint rules check the
 # architecture. Axe runs against rendered pixels in a real browser, which is
-# the only one of the six that can see what the cascade actually produced.
+# the only one that can see what the cascade actually produced.
 #
 # That distinction is not academic. It is how a specificity bug that made every
 # button variant's colour inert got found, months after the tokens for those
 # variants were declared, measured and passed.
+#
+# The count in this comment was wrong for a while, and so was the one in the
+# README, and so was the one on the page in the Storybook that argues an
+# unchecked claim decays. That is what the first gate is now for.
 
 jobs:
   verify:
@@ -34,6 +38,13 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # The gate list, the fixture count, the component count and the story
+      # count published in the Storybook are generated from this repository.
+      # This is the check that stops a number in the documentation drifting
+      # away from the thing it describes.
+      - name: The published numbers are current
+        run: npm run report:check
 
       # The committed tokens.css and contrast.json must match what tokens.ts
       # generates. A hand-edited cascade is a cascade nothing is measuring.

@@ -1,6 +1,6 @@
 # Verdict Design System
 
-[![CI](https://github.com/REPO_OWNER/verdict-ds/actions/workflows/ci.yml/badge.svg)](https://github.com/REPO_OWNER/verdict-ds/actions/workflows/ci.yml)
+[![CI](https://github.com/Rahullokhande-design/verdict-ds/actions/workflows/ci.yml/badge.svg)](https://github.com/Rahullokhande-design/verdict-ds/actions/workflows/ci.yml)
 
 A three-tier design token architecture and 20-component library for **Verdict**,
 a concept card-fraud review console. A model scores flagged transactions and a
@@ -19,7 +19,9 @@ state, no install. Flip the theme in the toolbar. Open the **Accessibility**
 panel: it runs axe live against whatever is on screen, and it is the same engine
 CI runs, so a green panel is the claim demonstrating itself.
 
-Start at **0 Enforcement → What is checked**, which is the argument in one page.
+It opens on **Start here**. After that, **Enforcement → What is checked** is the
+argument in one page, and **What the checks caught** is seven pages of the
+defects this system shipped, each with the failure drawn beside the fix.
 
 ## If you have ten
 
@@ -29,17 +31,24 @@ npx playwright install --with-deps chromium
 npm run verify
 ```
 
-Seven gates, cheapest failure first. This is the same command CI runs.
+Eight gates, cheapest failure first. This is the same command CI runs.
 
 | Gate | What it proves |
 | --- | --- |
+| `report:check` | The gate list, the fixture count, the component count and the story count published in the Storybook match what this repository actually contains |
 | `tokens:check` | The committed cascade matches what the source generates, the tiers resolve, every semantic role exists in both themes, and all 76 declared colour pairs meet their WCAG minimum |
 | `contract:check` | The published JSON Schema matches the types the components are written against, and all 9 fixtures validate against it |
 | `typecheck` | `tsc --noEmit` |
 | `lint` | typescript-eslint and jsx-a11y, plus three custom rules that encode this system's architecture |
-| `test:rules` | 21 fixtures showing each custom rule catching what it claims and permitting what it is allowed to |
+| `test:rules` | 23 fixtures showing each custom rule catching what it claims and permitting what it is allowed to |
 | `build-storybook` | It builds |
-| `test:a11y` | Axe over all 29 stories, in a real browser, exiting non-zero on any violation |
+| `test:a11y` | Axe over all 54 stories, in a real browser, exiting non-zero on any violation. Nothing is exempted |
+
+The first gate is the newest and it exists because of a failure worth admitting.
+This README said seven gates while eight ran, and twenty-one rule fixtures while
+twenty-three existed, on a page arguing that an unchecked claim decays. Those
+numbers are generated now, into `src/lib/verify.json`, and `report:check` fails
+the build when the committed copy no longer matches the source it counts.
 
 ---
 
@@ -123,7 +132,9 @@ applies a greyscale filter to the real components.
 ## What the checks have actually caught
 
 Not a hypothetical list. Seven live defects, and in every case the tool that
-found one was not the tool you would have expected.
+found one was not the tool you would have expected. Each has a page in the
+Storybook under **What the checks caught**, with the failure beside the fix and
+the ratios computed from the token file rather than quoted from memory.
 
 1. **Every button variant's colour was inert.** A form reset written
    `[data-verdict] button { color: inherit }` scores (0,1,1) and beat every
@@ -149,7 +160,7 @@ found one was not the tool you would have expected.
    by fixing the first one. **No gate caught this**: WCAG exempts disabled
    controls from contrast, so axe passed it cleanly. It needed an eye.
 7. **A fill colour used as text, on the enforcement page itself.** The red
-   "fails" label used `-solid` rather than `-fg`: 3.76:1. The system already had
+   "fails" label used `-solid` rather than `-fg`: 3.77:1. The system already had
    the correct token and the wrong one was simply the more obvious name, which is
    the mistake that split exists to catch, committed while documenting the split.
 
@@ -165,9 +176,10 @@ src/lib/types.ts              the domain types the components are written agains
 src/lib/tokens.json           generated: W3C DTCG export, aliases preserved
 src/lib/contract.schema.json  generated: the data contract, from the types
 src/lib/contrast.json         generated: every declared pair with its measured ratio
+src/lib/verify.json           generated: the gates, fixture, component and story counts
 src/styles/tokens.css         generated: the cascade, scoped to [data-verdict]
 src/components/               20 components, Radix behaviour, CVA variants
-src/stories/                  29 stories, organised by state rather than by prop
+src/stories/                  54 stories, organised by state rather than by prop
 eslint-rules/                 three custom rules, with fixtures
 scripts/                      the generators and the gates
 ```

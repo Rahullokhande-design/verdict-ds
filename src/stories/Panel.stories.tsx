@@ -3,7 +3,7 @@ import { Button, Panel } from "@/components/primitives";
 import { Matrix, State } from "./_harness";
 
 const meta = {
-  title: "Verdict/1 Primitives/Panel",
+  title: "Verdict/Primitives/Panel",
   component: Panel,
   args: { title: "Card", children: null },
 } satisfies Meta<typeof Panel>;

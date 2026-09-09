@@ -1,12 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  EntityChip,
-  EventTimeline,
-  RiskBadge,
-  VerdictStamp,
-} from "@/components/domain";
+import { RiskBadge } from "@/components/domain";
 import { BAND_RANGES, type RiskBand } from "@/lib/types";
-import { Matrix, Row, Stack, State } from "./_harness";
+import { Row, Stack, State } from "./_harness";
 
 /**
  * Tier 4: domain. These speak the vocabulary of risk review and are
@@ -14,7 +9,7 @@ import { Matrix, Row, Stack, State } from "./_harness";
  * shortcoming of it.
  */
 const meta = {
-  title: "Verdict/4 Domain/RiskBadge",
+  title: "Verdict/Domain/RiskBadge",
   component: RiskBadge,
   args: { band: 3 },
 } satisfies Meta<typeof RiskBadge>;
@@ -23,6 +18,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const BANDS: RiskBand[] = [1, 2, 3, 4];
+
+export const Playground: Story = {};
 
 /**
  * The case's central argument, rendered.
@@ -91,68 +88,5 @@ export const Greyscale: Story = {
         </Row>
       </div>
     </Stack>
-  ),
-};
-
-export const Stamps: StoryObj = {
-  name: "Verdict stamp",
-  render: () => (
-    <Row>
-      <VerdictStamp decision="approve" />
-      <VerdictStamp decision="decline" />
-      <VerdictStamp decision="escalate" />
-    </Row>
-  ),
-};
-
-export const Entities: StoryObj = {
-  name: "Entity chip",
-  render: () => (
-    <Matrix>
-      <State name="all four kinds">
-        <Stack gap={8}>
-          <EntityChip entity={{ kind: "device", label: "d41f · Windows", cases: 3, band: 4 }} />
-          <EntityChip entity={{ kind: "card", label: "•••• 4417", cases: 1, band: 2 }} />
-          <EntityChip entity={{ kind: "email", label: "m.okafor@fastmail.com", cases: 2, band: 3 }} />
-          <EntityChip entity={{ kind: "address", label: "Unit 4, Bramley Rd", cases: 1, band: 1 }} />
-        </Stack>
-      </State>
-      <State name="long label" note="an email is as long as it wants to be">
-        <div style={{ width: 220 }}>
-          <EntityChip
-            entity={{
-              kind: "email",
-              label: "a.very.long.address.someone.actually.uses@subdomain.example.co.uk",
-              cases: 6,
-              band: 4,
-            }}
-          />
-        </div>
-      </State>
-    </Matrix>
-  ),
-};
-
-export const Timeline: StoryObj = {
-  name: "Event timeline",
-  render: () => (
-    <Matrix>
-      <State name="mixed tones">
-        <EventTimeline
-          events={[
-            { at: "11:02", label: "Account opened", detail: "Email verified", tone: "reassuring" },
-            { at: "11:14", label: "Card added", detail: "First card on file" },
-            { at: "11:16", label: "Shipping address changed", tone: "concerning" },
-            { at: "11:17", label: "Order placed", detail: "£3,240" },
-          ]}
-        />
-      </State>
-      <State name="single event" note="the connector must not draw from nowhere">
-        <EventTimeline events={[{ at: "09:41", label: "Order placed" }]} />
-      </State>
-      <State name="empty" note="a case with no history">
-        <EventTimeline events={[]} />
-      </State>
-    </Matrix>
   ),
 };
