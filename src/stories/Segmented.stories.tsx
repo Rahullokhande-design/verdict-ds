@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { Segmented } from "@/components/compounds";
 import { Stack, State } from "./_harness";
+import { fn } from "storybook/test";
 
 /**
  * A single-choice control for two or three short options, built on a Radix
@@ -13,7 +14,7 @@ const meta = {
   component: Segmented,
   args: {
     value: "compact",
-    onValueChange: () => {},
+    onValueChange: fn(),
     label: "Row density",
     options: [
       { value: "compact", label: "Compact" },

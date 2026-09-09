@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { SortHeader } from "@/components/compounds";
+import { fn } from "storybook/test";
 
 /**
  * The arrow is `aria-hidden`; `aria-sort` on the `th` is what actually carries
@@ -10,7 +11,7 @@ import { SortHeader } from "@/components/compounds";
 const meta = {
   title: "Verdict/Compounds/SortHeader",
   component: SortHeader,
-  args: { label: "Score", active: true, direction: "desc", onClick: () => {} },
+  args: { label: "Score", active: true, direction: "desc", onClick: fn() },
 } satisfies Meta<typeof SortHeader>;
 
 export default meta;

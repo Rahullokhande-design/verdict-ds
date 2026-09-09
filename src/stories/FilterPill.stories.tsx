@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { FilterPill } from "@/components/compounds";
 import { Row, Stack, State } from "./_harness";
+import { fn } from "storybook/test";
 
 /**
  * A toggle that carries its own count. The pressed state is on
@@ -11,7 +12,7 @@ import { Row, Stack, State } from "./_harness";
 const meta = {
   title: "Verdict/Compounds/FilterPill",
   component: FilterPill,
-  args: { active: true, onClick: () => {}, count: 9, children: "Open" },
+  args: { active: true, onClick: fn(), count: 9, children: "Open" },
 } satisfies Meta<typeof FilterPill>;
 
 export default meta;

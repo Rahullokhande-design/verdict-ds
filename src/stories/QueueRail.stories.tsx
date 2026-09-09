@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { QueueRail } from "@/components/QueueRail";
 import { cases } from "@/lib/data";
 import type { CaseRecord, Decision } from "@/lib/types";
@@ -20,7 +20,7 @@ import type { CaseRecord, Decision } from "@/lib/types";
 const meta = {
   title: "Verdict/Workspace/QueueRail",
   component: QueueRail,
-  args: { cases, activeId: cases[0].id, onSelect: () => {} },
+  args: { cases, activeId: cases[0].id, onSelect: fn() },
 } satisfies Meta<typeof QueueRail>;
 
 export default meta;

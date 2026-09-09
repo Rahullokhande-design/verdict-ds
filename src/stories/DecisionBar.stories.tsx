@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { DecisionBar } from "@/components/DecisionBar";
 import type { Decision } from "@/lib/types";
 import { Stack, State } from "./_harness";
@@ -16,7 +16,7 @@ import { Stack, State } from "./_harness";
 const meta = {
   title: "Verdict/Workspace/DecisionBar",
   component: DecisionBar,
-  args: { onDecide: () => {} },
+  args: { onDecide: fn() },
 } satisfies Meta<typeof DecisionBar>;
 
 export default meta;

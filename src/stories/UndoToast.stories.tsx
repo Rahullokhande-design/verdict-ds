@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { UndoToast } from "@/components/DecisionBar";
 import { Stack, State } from "./_harness";
+import { fn } from "storybook/test";
 
 /**
  * The six seconds after a decision.
@@ -17,8 +18,8 @@ const meta = {
     decision: "approve",
     caseId: "VRD-4824",
     amount: "£3,240.00",
-    onUndo: () => {},
-    onExpire: () => {},
+    onUndo: fn(),
+    onExpire: fn(),
   },
 } satisfies Meta<typeof UndoToast>;
 
