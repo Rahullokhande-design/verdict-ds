@@ -61,8 +61,8 @@ export const OpacityBeatTheGate: Story = {
       <p style={{ margin: "24px 0 0", maxWidth: "68ch", color: "var(--vd-text-secondary)" }}>
         The fix is not a darker value. It is refusing to express a state as a
         filter over an unknown colour. A dedicated role can be declared,
-        measured and gated. An opacity cannot, because until it renders, nobody
-        knows what colour it is.
+        measured and gated. An opacity cannot, because its colour is unknown until it
+        renders.
       </p>
       <p style={{ margin: "12px 0 0", maxWidth: "68ch", color: "var(--vd-text-secondary)" }}>
         The story harness in this Storybook had the same bug in its own state

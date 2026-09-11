@@ -4,7 +4,7 @@
  * A week of scored transactions, split by what they turned out to be. This is
  * the data a risk manager has never been shown: they set a threshold, and the
  * consequences arrive a month later as a chargeback report and a queue backlog
- * that nobody connects back to the number they moved.
+ * that is never connected back to the number they moved.
  *
  * The shape is deliberately the realistic one, which is the whole problem.
  * Legitimate transactions pile up at the low end and fraud piles up at the high
@@ -59,7 +59,7 @@ export interface Projection {
   reviewed: number;
   /** Fraud that lands in the queue, so a reviewer gets the chance to stop it. */
   fraudCaught: number;
-  /** Fraud that sails through without anyone looking. */
+  /** Fraud that clears without review. */
   fraudMissed: number;
   /** Good customers pulled into review for nothing. */
   falsePositives: number;

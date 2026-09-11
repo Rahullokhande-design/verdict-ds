@@ -5,10 +5,11 @@ import verify from "@/lib/verify.json";
 import { storyPath } from "./_defect";
 
 /**
- * The argument, in the one place a stranger will actually look.
+ * The argument, in the one place a first-time reader will look.
  *
- * A design system's constraints normally live in a README nobody opens and a CI
- * config nobody has access to. Someone evaluating this in ten minutes will open
+ * A design system's constraints normally live in an unread README and a CI config
+ * no one outside the repository can run. Someone evaluating this in ten minutes
+ * will open
  * a Storybook URL and click around. So the rules are documented here, beside the
  * components they govern.
  *
@@ -157,9 +158,9 @@ const CAUGHT: { name: string; story: string; line: string }[] = [
     line: "A decided row faded to 0.55, compositing a passing token down to 2.66:1. Opacity happens long after a pair is declared.",
   },
   {
-    name: "A pair nobody declared",
-    story: "APairNobodyDeclared",
-    line: "Tertiary text was measured on two surfaces and rendered on a third. A gate is silent about the pairing nobody wrote down.",
+    name: "An undeclared pair",
+    story: "AnUndeclaredPair",
+    line: "Tertiary text was measured on two surfaces and rendered on a third. A gate is silent about a pairing that was never written down.",
   },
   {
     name: "An image around a button",
@@ -255,7 +256,7 @@ export const WhatIsChecked: Story = {
         good={`<ul role="listbox" tabIndex={0} onKeyDown={move}>`}
       />
 
-      <H>What the checks actually caught</H>
+      <H>What the checks caught</H>
       <p style={{ margin: "0 0 4px", maxWidth: "66ch", color: "var(--vd-text-secondary)" }}>
         Seven live defects, not a hypothetical list. In every case the check that
         found one was not the check you would have expected, and the sixth was

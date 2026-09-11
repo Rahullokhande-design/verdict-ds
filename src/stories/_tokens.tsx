@@ -67,7 +67,7 @@ export const isColour = (value: string) =>
  *
  * No text inside, deliberately. Every other way of drawing a swatch puts a
  * label on top of the colour it is demonstrating, which means a page of swatches
- * is a page of contrast pairs nobody intended to create, and half of them fail.
+ * is a page of contrast pairs that were never intended, and half of them fail.
  * The label sits beside it, in a colour the system has already measured.
  *
  * Marked aria-hidden because the hex is written next to it as text: a screen

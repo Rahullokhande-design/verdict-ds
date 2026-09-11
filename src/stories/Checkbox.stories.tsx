@@ -33,7 +33,8 @@ type Story = StoryObj<typeof meta>;
  * Each takes its own case id, which is both how a bulk-select column actually
  * works and what makes the matrix testable: five controls sharing one accessible
  * name can only be told apart by their position in the DOM, and a test that
- * depends on render order is a test that breaks the first time somebody reorders
+ * depends on render order is a test that breaks the first time the stories are
+ * reordered
  * the states.
  */
 function Controlled({

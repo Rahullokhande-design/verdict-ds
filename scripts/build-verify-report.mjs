@@ -2,9 +2,8 @@
 /**
  * Verdict verify report.
  *
- * Emits src/lib/verify.json: what `npm run verify` actually runs, how many
- * rule fixtures actually exist, and how many stories the Storybook actually
- * carries.
+ * Emits src/lib/verify.json: what `npm run verify` runs, how many rule fixtures
+ * exist, and how many stories the Storybook carries.
  *
  * ── Why this file exists ──────────────────────────────────────────────────
  *
@@ -108,7 +107,7 @@ const undescribed = gateNames.filter((n) => !GATES[n]);
 if (undescribed.length) {
   throw new Error(
     `These gates run in \`verify\` but have no description in GATES: ${undescribed.join(", ")}. ` +
-      `Add one in scripts/build-verify-report.mjs. A gate nobody can name is a gate nobody trusts.`
+      `Add one in scripts/build-verify-report.mjs. A gate that cannot be named is a gate that will not be trusted.`
   );
 }
 

@@ -3,7 +3,7 @@
  *
  * ── What this is, and deliberately is not ─────────────────────────────────
  *
- * It is NOT an API design. Nobody here has designed the fraud-scoring service,
+ * It is NOT an API design. The fraud-scoring service was not designed here: not
  * its auth, its pagination, its error semantics or its consistency guarantees,
  * and a hand-written OpenAPI document would be an invention dressed as a
  * deliverable.
@@ -52,7 +52,7 @@ const schema = generator.createSchema("*");
  * `type: "*"` also picks up the helper functions that live beside the types,
  * which arrive as odd `namedArgs` objects. A data contract describes data, so
  * anything the generator annotated with a function signature is dropped rather
- * than shipped as a definition somebody has to wonder about.
+ * than shipped as a definition a reader has to wonder about.
  */
 const definitions = Object.fromEntries(
   Object.entries(schema.definitions ?? {}).filter(

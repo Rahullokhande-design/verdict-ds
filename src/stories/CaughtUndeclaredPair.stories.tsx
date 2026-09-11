@@ -3,7 +3,7 @@ import contrast from "@/lib/contrast.json";
 import { Defect } from "./_defect";
 
 const meta = {
-  title: "Verdict/What the checks caught/A pair nobody declared",
+  title: "Verdict/What the checks caught/An undeclared pair",
   tags: ["!autodocs"],
   parameters: {
     layout: "fullscreen",
@@ -28,7 +28,7 @@ const mono = "var(--vd-fontFamily-mono)";
  * There is no swatch on this page, and that is the point. The defect was not a
  * colour that looked wrong, it was a row that did not exist, so the proof is the
  * list of rows that do. Both tables below are computed from contrast.json as the
- * page renders. If somebody deletes the fix, the second table empties out and
+ * page renders. If the fix is removed, the second table empties out and
  * this page says so.
  */
 function surfacesFor(role: string) {
@@ -92,14 +92,14 @@ function Table({
   );
 }
 
-export const APairNobodyDeclared: Story = {
-  name: "A pair nobody declared",
+export const AnUndeclaredPair: Story = {
+  name: "An undeclared pair",
   render: () => (
     <Defect
       headline="A colour that was never measured on the surface it sat on"
       sawIt="Light-theme tertiary text was declared against panels and against the app background, and it passed against both. The queue rail is neither. It sits on the sunken surface, a third background, and that pairing had simply never been written down. It measured 4.38:1 there, under a 4.5 bar."
       caughtBy="Axe, on the queue rail. It has no list to work from: it measures whatever two colours ended up on top of each other."
-      missedBy="The contrast gate, and not through a bug in it. A contrast report is a list of the pairings somebody remembered, and the interesting failures live in the pairings they did not. Silence from a gate reads exactly like a pass."
+      missedBy="The contrast gate, and not through a bug in it. A contrast report is a list of the pairings someone remembered, and the interesting failures live in the pairings they did not. Silence from a gate reads exactly like a pass."
       lives={{ label: "QueueRail, open", title: "Verdict/Workspace/QueueRail", story: "Open" }}
     >
       <p style={{ margin: "24px 0 0", maxWidth: "68ch" }}>

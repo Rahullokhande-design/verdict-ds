@@ -1107,7 +1107,7 @@
 .vd-toast__meta { font-size: var(--vd-fontSize-xs); color: var(--vd-toast-meta-fg); }
 
 /* Time remaining, drawn rather than described. A countdown in words is a
-   countdown nobody reads in the four seconds they have. */
+   countdown that goes unread in the four seconds available. */
 .vd-toast__timer {
   position: relative;
   width: 22px;

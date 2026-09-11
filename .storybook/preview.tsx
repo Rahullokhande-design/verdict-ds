@@ -65,7 +65,7 @@ const preview: Preview = {
               // broke.
               "Inert button colour",
               "Opacity beat the gate",
-              "A pair nobody declared",
+              "An undeclared pair",
               "An image around a button",
               "A pointer to nothing",
               "The one no gate caught",

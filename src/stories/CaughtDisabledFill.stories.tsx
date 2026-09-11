@@ -33,7 +33,7 @@ export const TheOneNoGateCaught: Story = {
     <Defect
       headline="A disabled button that dimmed its label and kept its fill"
       sawIt="Exposed by fixing the first defect on this list. Once variants rendered their own colour, the disabled state dimmed the label and left the saturated background underneath it. An unreadable word on a confident red rectangle does not read as unavailable. It reads as broken."
-      caughtBy="Nobody. Somebody looked at the disabled row in the button story and said that it looked wrong."
+      caughtBy="No check. A review of the disabled row in the button story flagged that it looked wrong."
       missedBy="Every gate here, correctly. WCAG exempts inactive controls from contrast, so axe passed it cleanly and had no business doing anything else. The tokens were right, the types were right, the lint was right."
       lives={{ label: "Button, disabled on every variant", title: "Verdict/Primitives/Button", story: "States" }}
     >

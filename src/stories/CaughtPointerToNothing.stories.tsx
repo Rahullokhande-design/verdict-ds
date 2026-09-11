@@ -40,7 +40,7 @@ export const APointerToNothing: Story = {
         This is the argument for a story per state in one defect. The empty list,
         the four-digit number, the label that wraps, the row already decided:
         none of them appear on a happy path, all of them appear in production,
-        and the only way they get built deliberately is if somebody writes them
+        and the only way they get built deliberately is if they are written
         down as states rather than waiting to find them.
       </p>
     </Defect>

@@ -66,7 +66,7 @@
         [
           "Inert button colour",
           "Opacity beat the gate",
-          "A pair nobody declared",
+          "An undeclared pair",
           "An image around a button",
           "A pointer to nothing",
           "The one no gate caught",
@@ -176,9 +176,9 @@
       "verdict-primitives-sronly--states",
       "verdict-primitives-tooltip--sides",
       "verdict-start-here-overview--overview",
-      "verdict-what-the-checks-caught-a-pair-nobody-declared--a-pair-nobody-declared",
       "verdict-what-the-checks-caught-a-pointer-to-nothing--a-pointer-to-nothing",
       "verdict-what-the-checks-caught-an-image-around-a-button--an-image-around-a-button",
+      "verdict-what-the-checks-caught-an-undeclared-pair--an-undeclared-pair",
       "verdict-what-the-checks-caught-inert-button-colour--inert-button-colour",
       "verdict-what-the-checks-caught-opacity-beat-the-gate--opacity-beat-the-gate",
       "verdict-what-the-checks-caught-the-one-no-gate-caught--the-one-no-gate-caught",
@@ -251,7 +251,7 @@
         "stories": 1
       },
       "CaughtUndeclaredPair.stories.tsx": {
-        "title": "Verdict/What the checks caught/A pair nobody declared",
+        "title": "Verdict/What the checks caught/An undeclared pair",
         "section": "What the checks caught",
         "kind": "documentation",
         "stories": 1

@@ -143,7 +143,7 @@ const handlerOnNonInteractive = {
         errors: [{ messageId: "noKeyboardPath" }],
       },
       {
-        // A role that is not something you operate.
+        // A role that is not an operable control.
         code: `<li role="presentation" tabIndex={0} onClick={f} />;`,
         errors: [{ messageId: "nonInteractive" }],
       },

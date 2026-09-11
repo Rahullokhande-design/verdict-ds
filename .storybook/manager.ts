@@ -29,7 +29,7 @@ addons.setConfig({
   sidebar: {
     /**
      * Expanded. Nine sections and twenty-six leaves fit on one screen, and a
-     * collapsed tree hides the thing worth finding behind a click nobody makes.
+     * collapsed tree hides the thing worth finding behind a click few readers make.
      */
     showRoots: true,
   },

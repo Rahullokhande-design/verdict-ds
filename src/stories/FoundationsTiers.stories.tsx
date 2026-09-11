@@ -274,8 +274,8 @@ export const ThreeTiers: Story = {
       <p style={{ margin: "12px 0 0", maxWidth: "66ch", color: "var(--vd-text-secondary)" }}>
         The chains above are the proof. Tier three points at tier two, and tier
         two lands on a different primitive in each theme. Cut out the middle and
-        the light column resolves to the dark value, in an interface nobody looked
-        at in the light theme that week.
+        the light column resolves to the dark value, in an interface that was not
+        opened in the light theme that week.
       </p>
       <p style={{ margin: "12px 0 0", maxWidth: "66ch", color: "var(--vd-text-secondary)" }}>
         Aliases survive the export too. In{" "}

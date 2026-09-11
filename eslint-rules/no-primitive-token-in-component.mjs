@@ -9,7 +9,7 @@
  * `var(--vd-surface-raised)` on the day it is written. The difference only
  * appears later, in the light theme, where the semantic role flips and the
  * primitive does not. One primitive reference is how a themeable system becomes
- * a dark-only system with a broken light mode nobody has opened yet.
+ * a dark-only system with a broken light mode that has not been opened yet.
  *
  * The generator already enforces this inside tokens.ts, where it can see the
  * reference graph. It cannot see component source, so component source is where
@@ -18,7 +18,7 @@
  * ── The stated exception ───────────────────────────────────────────────────
  *
  * Spacing, radius, type and duration primitives ARE allowed directly. Inventing
- * a semantic role for every gap produces a dictionary nobody reads, and a gap
+ * a semantic role for every gap produces a dictionary that goes unread, and a gap
  * does not change between themes, so there is nothing for the indirection to
  * protect. Colour is the tier that flips, so colour is the tier that is policed.
  * The exception is narrow and deliberate rather than an oversight, which is why

@@ -79,7 +79,7 @@ and dangles for whoever imports one theme.
 
 ### `src/lib/contract.schema.json` — what the interface needs from an API
 
-**This is not an API design.** Nobody here designed the scoring service, its
+**This is not an API design.** The scoring service was not designed here: not its
 auth, pagination, error semantics or consistency guarantees, and a hand-written
 OpenAPI document would be an invention dressed as a deliverable.
 
@@ -111,10 +111,11 @@ A component reads tier 3 and tier 2. Never tier 1. That single constraint is wha
 makes theming a diff instead of an audit, and it is the one that degrades
 quietest, because `var(--vd-color-graphite-800)` renders identically to
 `var(--vd-surface-raised)` on the day it is written and differently in the light
-theme nobody has opened yet.
+theme that has not been opened yet.
 
 One stated exception: spacing, radius and type primitives are used directly.
-Inventing a semantic role for every gap produces a dictionary nobody reads, and a
+Inventing a semantic role for every gap produces a dictionary that goes unread,
+and a
 gap does not change between themes. Colour is the tier that flips, so colour is
 the tier that is policed.
 
@@ -129,7 +130,7 @@ printed numeric band.
 The `Bands, hue removed` story is the proof rather than an illustration of it. It
 applies a greyscale filter to the real components.
 
-## What the checks have actually caught
+## What the checks have caught
 
 Not a hypothetical list. Seven live defects, and in every case the tool that
 found one was not the tool you would have expected. Each has a page in the
@@ -165,7 +166,7 @@ the ratios computed from the token file rather than quoted from memory.
    the mistake that split exists to catch, committed while documenting the split.
 
 Six found by tooling, one that needed a person. Which is the honest end of the
-argument: the checks find what they are shaped to find, and somebody still has to
+argument: the checks find what they are shaped to find, and a person still has to
 look.
 
 ## Layout

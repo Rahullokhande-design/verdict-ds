@@ -9,7 +9,7 @@ import verify from "@/lib/verify.json";
  *
  * The seven defects were one paragraph each at the bottom of a long
  * documentation story, in the fourth folder of a mis-sorted sidebar. They are
- * the most persuasive thing in this system and almost nobody scrolled to them.
+ * the most persuasive thing in this system and were almost never scrolled to.
  * Every one of them is a defect you can see, and not one of them was shown.
  *
  * So each gets its own page, with the failure beside the fix.
@@ -36,8 +36,8 @@ type Measurement = (typeof contrast.measurements)[number];
  * The hex a role resolves to, taken from the contrast report rather than typed.
  *
  * A role appears in the report as a foreground, a background, or both, so both
- * sides are searched. A role nobody has ever measured has no entry, and that is
- * an error rather than a fallback: a page about colours nobody measured should
+ * sides are searched. A role that has never been measured has no entry, and that is
+ * an error rather than a fallback: a page about unmeasured colours should
  * not quietly invent one.
  */
 export function hex(theme: "dark" | "light", role: string): string {
@@ -115,7 +115,7 @@ const mono = "var(--vd-fontFamily-mono)";
  * verify.json carries every real story id, generated from the same source
  * Storybook indexes, so an unresolvable link throws while the page renders. Axe
  * renders every page in CI, which makes a broken cross-link a failed build
- * rather than a dead end somebody finds later.
+ * rather than a dead end found later.
  */
 export function storyPath(title: string, exportName: string): string {
   const slug = (s: string) =>

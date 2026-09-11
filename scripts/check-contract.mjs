@@ -4,7 +4,7 @@
  * A schema nothing is checked against is a document, not a contract. This runs
  * every case and the policy object the prototype actually renders through the
  * generated schema, so the file handed to a backend team is known to describe
- * data that really drives the interface rather than data somebody hoped it did.
+ * data that really drives the interface rather than data assumed to drive it.
  *
  * It also closes the loop the other way. If a component starts reading a field
  * the types do not declare, or the fixtures drift from the types, this fails

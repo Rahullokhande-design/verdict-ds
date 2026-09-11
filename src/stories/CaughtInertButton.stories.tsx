@@ -28,7 +28,7 @@ export const InertButtonColour: Story = {
   render: () => (
     <Defect
       headline="Every button variant's colour was inert for months"
-      sawIt="A form reset in the base stylesheet was written as [data-verdict] button. That selector scores (0,1,1) and beats every single-class variant below it, so all six button variants rendered in the inherited body colour instead of their own. The buttons looked plausible, which is why nobody queried them."
+      sawIt="A form reset in the base stylesheet was written as [data-verdict] button. That selector scores (0,1,1) and beats every single-class variant below it, so all six button variants rendered in the inherited body colour instead of their own. The buttons looked plausible, which is why they were never queried."
       caughtBy="Axe, in a real browser. It is the only check in this build that measures the pixels a cascade actually produced rather than reasoning about source."
       missedBy="The token gate. Every colour pair the tokens declared was correct and every one of them passed. Nothing was wrong with the declaration. The cascade never reached it."
       lives={{ label: "Button, every variant at every size", title: "Verdict/Primitives/Button", story: "Variants" }}

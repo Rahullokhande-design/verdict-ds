@@ -8,7 +8,7 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 
 /**
  * Storybook exists here for one reason: a component's states are the part of a
- * design system that nobody documents and everybody needs.
+ * design system that is least often documented and most often relied on.
  *
  * A screen shows a component in the two or three states the happy path happens
  * to produce. The states that break a system in production are the ones a
@@ -25,7 +25,7 @@ const config: StorybookConfig = {
     "@storybook/addon-a11y",
     // Autodocs. Without it, `tags: ["autodocs"]` in preview.tsx is inert: the
     // build succeeds, the sidebar shows no documentation pages, and nine story
-    // files go on declaring `component:` for nobody. That was the state this
+    // files go on declaring `component:` with nothing to render. That was the state
     // Storybook shipped in.
     "@storybook/addon-docs",
   ],
@@ -34,7 +34,7 @@ const config: StorybookConfig = {
    * Storybook's own onboarding checklist, off.
    *
    * It renders a "Get started · 39%" progress widget at the top of the sidebar
-   * and an onboarding entry in the menu. Both are addressed to somebody setting
+   * and an onboarding entry in the menu. Both are addressed to a reader setting
    * up their first Storybook, which is not who opens a published one, and a
    * progress bar reading 39% is a strange first impression for a work sample.
    */

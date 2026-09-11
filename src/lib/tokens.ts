@@ -33,7 +33,7 @@
  *
  * One deliberate exception, stated rather than hidden: stylesheets use spacing
  * and type primitives directly (`var(--vd-space-5)`), because inventing a
- * semantic role for every gap produces a dictionary nobody reads. Colour has no
+ * semantic role for every gap produces a dictionary that goes unread. Colour has no
  * such exception. No component ever names a colour primitive.
  *
  * ── Why the palette looks like this ────────────────────────────────────────
@@ -535,7 +535,7 @@ export const componentTokens: TokenMap = {
    *
    * WCAG exempts disabled controls from contrast, so no gate was ever going to
    * catch this. It is a design defect, not a compliance one, which is worth
-   * saying: the checks find what they are shaped to find and somebody still has
+   * saying: the checks find what they are shaped to find and a person still has
    * to look.
    */
   "btn-disabled-bg": "{surface-hover}",
@@ -622,7 +622,7 @@ export const componentTokens: TokenMap = {
   "toast-shadow": "{elevation-modal}",
   "toast-timer": "{text-accent}",
   /* On an overlay surface a subtle border is invisible, and a countdown track
-     nobody can see is a countdown that only exists for the person who built it. */
+     that cannot be seen only exists for the person who built it. */
   "toast-timer-track": "{border-strong}",
 
   // Shift progress. A recessed track, so it reads as cut into the top bar.
@@ -675,7 +675,7 @@ export const contrastPairs: {
   /**
    * Measured and published, but not allowed to fail the build. Used only where
    * WCAG itself grants an exemption, and the exemption is named in `context`.
-   * Recording these is deliberate: a number nobody is allowed to hide is more
+   * Recording these is deliberate: a number that cannot be hidden is more
    * honest than a pair quietly deleted from the list.
    */
   advisory?: boolean;

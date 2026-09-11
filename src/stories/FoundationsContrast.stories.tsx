@@ -178,7 +178,7 @@ export const MeasuredContrast: Story = {
 
       <p style={{ margin: "16px 0 0", maxWidth: "70ch", color: "var(--vd-text-secondary)" }}>
         Worth stating the limit of this table plainly: it proves the pairs in it
-        are safe, and proves nothing at all about a pairing nobody declared. That
+        are safe, and proves nothing at all about a pairing that was never declared. That
         is a real defect this system shipped, and the reason axe runs against
         rendered pixels afterwards rather than trusting the report.
       </p>

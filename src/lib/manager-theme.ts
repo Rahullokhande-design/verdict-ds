@@ -72,7 +72,7 @@ export const verdictManagerColors = {
  *
  * Storybook ships its own favicon and only steps aside when the manager head
  * already declares one, so this goes in as a data URI rather than as a file
- * somebody has to remember to copy. Its colours come out of the token source
+ * that has to be remembered and copied. Its colours come out of the token source
  * like every other colour here.
  */
 const mark = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">

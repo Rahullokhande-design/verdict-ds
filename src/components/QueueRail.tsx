@@ -14,7 +14,7 @@ import type { CaseRecord } from "@/lib/types";
  *
  * Sorting the riskiest cases to the top optimises for the model. Sorting by the
  * time left before the authorisation lapses optimises for the only outcome that
- * cannot be recovered: a case nobody decided. A high-risk case with two hours
+ * cannot be recovered: a case left undecided. A high-risk case with two hours
  * left can wait. A moderate case with eight minutes cannot.
  *
  * Rendered as a listbox rather than a list of links, because a reviewer moves
